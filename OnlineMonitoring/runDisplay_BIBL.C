@@ -121,7 +121,7 @@ int runDisplay_BIBL()
   while(std::time(0) < startTime + monitorTime)
   {
     std::ifstream latestFile;
-    latestFile.open("/afs/cern.ch/user/a/abooth/public/BeamLineDataOutput/Histograms_BIBL/latestHistoFile_BIBL.txt");
+    latestFile.open("/scratch/BeamInstOutput/Histograms_BIBL/latestHistFile.txt");
     std::string latestFilePath = "";
     latestFile >> latestFilePath;
     latestFile.close();

@@ -85,7 +85,7 @@ int runDisplay_BI()
   while(std::time(0) < startTime + monitorTime)
   {
     std::ifstream latestFile;
-    latestFile.open("/afs/cern.ch/user/a/abooth/public/BeamLineDataOutput/Histograms_BI/latestHistoFile_BI.txt");
+    latestFile.open("/scratch/BeamInstOutput/Histograms_BI/latestHistFile.txt");
     std::string latestFilePath = "";
     latestFile >> latestFilePath;
     latestFile.close();

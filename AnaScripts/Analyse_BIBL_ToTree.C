@@ -12,7 +12,7 @@
 int main(int argc, char *argv[])
 {
   gROOT->ProcessLine("#include <vector>");
-  std::string s_OutDir = "/afs/cern.ch/user/a/abooth/public/BeamLineDataOutput/Trees_DIPProcessed/";
+  std::string s_OutDir = "/scratch/BeamInstOutput/Trees_DIPProcessed/";
 
   bool zeroSuppress = argv[1];
   std::vector<std::string> vec_DataPath;
@@ -72,11 +72,11 @@ int main(int argc, char *argv[])
     std::string s_FirstTime = s_FirstFile.substr(s_FirstFile.length()-15,10);
     std::string s_LastTime  = s_LastFile .substr(s_LastFile .length()-15,10);
 
-    beamline.dumpBIData                    (map_Detector,(TString)s_OutDir+"Analyse_BL_ToTree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
-    beamline.dumpTFCoincidencesDegenerate  (map_Detector,(TString)s_OutDir+"Analyse_BL_ToTree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
-    beamline.dumpTFCoincidencesUnique      (map_Detector,(TString)s_OutDir+"Analyse_BL_ToTree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
-    beamline.dumpPROFCoincidencesDegenerate(map_Detector,(TString)s_OutDir+"Analyse_BL_ToTree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
-    beamline.dumpPROFCoincidencesUnique    (map_Detector,(TString)s_OutDir+"Analyse_BL_ToTree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
+    beamline.dumpBIData                    (map_Detector,(TString)s_OutDir+"Analyse_BIBL_ToTree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
+    beamline.dumpTFCoincidencesDegenerate  (map_Detector,(TString)s_OutDir+"Analyse_BIBL_ToTree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
+    beamline.dumpTFCoincidencesUnique      (map_Detector,(TString)s_OutDir+"Analyse_BIBL_ToTree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
+    beamline.dumpPROFCoincidencesDegenerate(map_Detector,(TString)s_OutDir+"Analyse_BIBL_ToTree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
+    beamline.dumpPROFCoincidencesUnique    (map_Detector,(TString)s_OutDir+"Analyse_BIBL_ToTree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
 
     std::ofstream latestFile;
     latestFile.open(s_OutDir+"latestTreeFile_BIBL.txt");

@@ -276,7 +276,7 @@ void plotTF(std::vector<TFCoincidenceRecord::TFCoincidence> &vec_TFCO, std::vect
 int main(int argc, char *argv[])
 {
   gROOT->ProcessLine("#include <vector>");
-  std::string s_OutDir = "/afs/cern.ch/user/a/abooth/public/BeamLineDataOutput/Histograms_BIBL/";
+  std::string s_OutDir = "/scratch/BeamInstOutput/Histograms_BIBL/";
 
   bool zeroSuppress = argv[1];
   std::vector<std::string> vec_DataPath;
@@ -395,7 +395,7 @@ int main(int argc, char *argv[])
     delete f_Out;
 
     std::ofstream latestFile;
-    latestFile.open(s_OutDir+"latestHistoFile_BIBL.txt");
+    latestFile.open(s_OutDir+"latestHistFile.txt");
     latestFile << s_OutDir+"Analyse_BIBL_ToHist_"+s_FirstTime+"_"+s_LastTime+".root" << std::endl;
     latestFile.close();
 

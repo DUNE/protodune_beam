@@ -53,7 +53,7 @@ int runDisplay_BL()
   while(std::time(0) < startTime + monitorTime)
   {
     std::ifstream latestFile;
-    latestFile.open("/afs/cern.ch/user/a/abooth/public/BeamLineDataOutput/Histograms_BL/latestHistoFile_BL.txt");
+    latestFile.open("/scratch/BeamInstOutput/Histograms_BL/latestHistFile.txt");
     std::string latestFilePath = "";
     latestFile >> latestFilePath;
     latestFile.close();

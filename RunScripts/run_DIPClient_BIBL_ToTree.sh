@@ -1,8 +1,8 @@
 #!/bin/sh
 
-HOME=/afs/cern.ch/user/a/abooth/private/BeamLineMonitoring
-DATAHOME=/afs/cern.ch/user/a/abooth/public/BeamLineDataOutput
-DIPHOME=/afs/cern.ch/user/a/abooth/private/BeamLineMonitoring/dip-5.6.3
+HOME=/nfs/sw/BeamLineMonitoring
+DATAHOME=/scratch/BeamInstOutput
+DIPHOME=/nfs/sw/BeamLineMonitoring/dip-5.6.3
 export LD_LIBRARY_PATH=$DIPHOME/lib64:$LD_LIBRARY_PATH
 
 lifetime=0
@@ -27,8 +27,8 @@ timestamp=$(date +%s)
 
 while [ `date +%s` -lt $((timestamp+lifetime)) ]
 do
-  source $HOME/RunScripts/run_AnaScript_BI_ToTree.sh &
+  source $HOME/RunScripts/run_AnaScript_BIBL_ToTree.sh &
   sleep 60
 done
 
-echo "HISTOGRAM WRITING FINISHED"
+echo "ANALYSIS SCRIPT FINISHED"

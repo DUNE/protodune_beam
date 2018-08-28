@@ -221,7 +221,7 @@ void plot_EventLevel(std::map<std::string,Detector> &map_Detector, std::map<std:
 int main(int argc, char *argv[])
 {
   gROOT->ProcessLine("#include <vector>");
-  std::string s_OutDir = "/afs/cern.ch/user/a/abooth/public/BeamLineDataOutput/Histograms_BI/";
+  std::string s_OutDir = "/scratch/BeamInstOutput/Histograms_BI/";
 
   bool zeroSuppress = argv[1];
   std::vector<std::string> vec_DataPath;
@@ -302,7 +302,7 @@ int main(int argc, char *argv[])
     delete f_Out;
 
     std::ofstream latestFile;
-    latestFile.open(s_OutDir+"latestHistoFile_BI.txt");
+    latestFile.open(s_OutDir+"latestHistFile.txt");
     latestFile << s_OutDir+"Analyse_BI_ToHist_"+s_FirstTime+"_"+s_LastTime+".root" << std::endl;
     latestFile.close();
 

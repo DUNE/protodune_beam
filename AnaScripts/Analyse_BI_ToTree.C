@@ -12,7 +12,7 @@
 int main(int argc, char *argv[])
 {
   gROOT->ProcessLine("#include <vector>");
-  std::string s_OutDir = "/afs/cern.ch/user/a/abooth/public/BeamLineDataOutput/Trees_DIPProcessed/";
+  std::string s_OutDir = "/scratch/BeamInstOutput/Trees_DIPProcessed/";
 
   bool zeroSuppress = argv[1];
   std::vector<std::string> vec_DataPath;

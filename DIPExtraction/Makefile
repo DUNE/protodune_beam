@@ -1,4 +1,4 @@
-DIPHOME=/afs/cern.ch/user/a/abooth/Documents/dip-5.6.3
+DIPHOME=/nfs/sw/BeamLineMonitoring/dip-5.6.3
 
 CC = g++
 CFLAGS = -Wall -ansi -I $(DIPHOME)/include -std=c++11
