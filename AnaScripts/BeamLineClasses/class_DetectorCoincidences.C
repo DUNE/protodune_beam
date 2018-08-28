@@ -55,7 +55,7 @@ unsigned int TFCoincidenceRecord::getMultiplicity(std::string const &cUSOrDS, un
 
 void TFCoincidenceRecord::addCoincidence(unsigned int cDetUS, unsigned int cAcqUS, unsigned int cEventUS, unsigned int cDetDS, unsigned int cAcqDS, unsigned int cEventDS, double cTF)
 {
-  TFCoincidenceRecord::TFCoincidence tofCo = {cDetUS, cDetDS, cEventUS, cDetDS, cAcqDS, cEventDS, cTF};
+  TFCoincidenceRecord::TFCoincidence tofCo = {cDetUS, cAcqUS, cEventUS, cDetDS, cAcqDS, cEventDS, cTF};
   fMapUS[{cDetUS,cAcqUS,cEventUS}].push_back(tofCo);
   fMapDS[{cDetDS,cAcqDS,cEventDS}].push_back(tofCo);
   fVecTFCoincidesDegenerate.push_back(tofCo);
