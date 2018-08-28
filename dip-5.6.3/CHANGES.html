@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script>
+                  function HTMLDecode(s){
+                    s = s.replace(new RegExp(/&lt;/gi), "<");
+                    s = s.replace(new RegExp(/&gt;/gi), ">");
+                    s = s.replace(new RegExp(/&amp;/gi), "&");
+                    return s;
+               }
+               </script>
+<link rel="stylesheet" href="http://wikis.cern.ch/s/1627/45/11/_/styles/combined.css?spaceKey=EN" type="text/css">
+<link rel="stylesheet" type="text/css" href="http://wikis.cern.ch/s/1627/45/1/_/download/resources/com.adaptavist.confluence.themes.sitebuilder:sitebuilder/hmenu/src/skin-longhorn.css">
+<link rel="stylesheet" type="text/css" href="http://wikis.cern.ch/plugins/builder/layout-resources.action?layoutId=ENDEPARTMENT&amp;key=EN&amp;resource=combinedcss&amp;hash=-59677564s16274511_">
+<title>DIP Distribution&nbsp;5.6.3 Change Log</title>
+</head>
+<body style="margin: 20px; background-color: white;">
+<h1>DIP Distribution&nbsp;5.6.3 Change Log</h1>
+<noscript>
+<b>WARNING</b> : Javascript is required for correct rendering of the <b>description</b> column.</noscript>
+<p>
+<table class="grid" cellspacing="0" width="100%">
+<caption style="text-align: left; font-weight: bold">
+<a href="http://cern.ch/DIP">DIP Distribution version 5.6.3</a><span class="smalltext"> (4 issues)</span>
+</caption>
+<tbody>
+<tr>
+<th style="text-align: left;">Type</th><th style="text-align: left;">Key</th><th style="text-align: left;">Summary</th><th style="text-align: left;">Description</th>
+</tr>
+<tr class="rowAlternate">
+<td valign="top" nowrap="true"><a href="https://its.cern.ch/jira/browse/DIP-160">Task</a></td><td valign="top" nowrap="true"><b><a href="https://its.cern.ch/jira/browse/DIP-160">DIP-160</a></b></td><td valign="top"><b><a href="https://its.cern.ch/jira/browse/DIP-160">Backward compatibility for SLC6</a></b></td><td valign="top" id="td2">
+                DIP v.5.6.2 needs to support SLC6, this implies backporting to log4cplus 1.1.2 (any later release requires GLIBC 1.17+, which SLC6 does not support).
+                To this aim, an SLC6 build profile needs to be added and a different artifact name be introduced (this will remain a separate artifact, not part of the DIP ZIP distribution, to be setup manually).
+            <script>td2.innerHTML=HTMLDecode(td2.innerHTML);</script></td>
+</tr>
+<tr class="rowNormal">
+<td valign="top" nowrap="true"><a href="https://its.cern.ch/jira/browse/DIP-116">Improvement</a></td><td valign="top" nowrap="true"><b><a href="https://its.cern.ch/jira/browse/DIP-116">DIP-116</a></b></td><td valign="top"><b><a href="https://its.cern.ch/jira/browse/DIP-116">DIP libraries distributed in RPM format</a></b></td><td valign="top" id="td3">
+                As reported by Marc Dobson at CNIC, there is interest in seeing the DIP libraries shipped as RPM and made centrally available.
+                Need for the following RPM packages :
+                
+                    C++ Libraries for Linux 32 bits (version should specify which GCC version was used and which operating system)
+                    C++ Libraries for Linux 64 bits (version should specify which GCC version was used and which operating system)
+                    Development package for SLC5 - (OS-specific, platform independent headers, Documentation - GCC version and linking details)
+                    Java Libraries, javadoc and utilities - including DIP Browser
+                
+                Plus possible extensions (to be moved to another JIRA if required)
+                
+                    Development package for SLC6 - (OS-specific, platform independent headers, Documentation - GCC version and linking details)
+                
+                
+                    RPM details
+                
+                    Runtime RPM i386 :  Installation under /opt/dip-&lt;VERSION&gt;/lib
+                            Symbolic link under /usr/local/lib/libdip.so
+                            Symbolic link under /usr/local/lib/liblog4cplus.so
+                            Symbolic links :  libdip.5.0.0.so
+                                    libdip.5.0.so
+                                    libdip.so
+                                
+                            
+                        
+                    
+                
+                
+                    For a fresh install, copy and link
+                    For an update, execute the post uninstall of the previous package, and execute the install of the new one.
+                
+                
+                    Development RPM i386 :  Requires the Runtime RPM
+                            Installation under /opt/dip-&lt;version&gt;/include /examples /doc avec README, NOTES, compilation details
+                        
+                    
+                
+                
+                    Java RPM :  Requires the Runtime RPM
+                            Installation of JAR under /opt/dip-&lt;version&gt;/lib /tools /javadoc
+                            Symbolic Link to /usr/local/share ?? a verifier !
+                            Bash scripts for the browser under /usr/local/bin - verify that the DIPBASE is defined, if not specify the CLASSPATH, LIBRARY PATH
+                        
+                    
+                
+            <script>td3.innerHTML=HTMLDecode(td3.innerHTML);</script></td>
+</tr>
+<tr class="rowAlternate">
+<td valign="top" nowrap="true"><a href="https://its.cern.ch/jira/browse/DIP-87">Improvement</a></td><td valign="top" nowrap="true"><b><a href="https://its.cern.ch/jira/browse/DIP-87">DIP-87</a></b></td><td valign="top"><b><a href="https://its.cern.ch/jira/browse/DIP-87">
+Integrate compilable Java and C++ code samples for Client and Server
+</a></b></td><td valign="top" id="td4">
+                the DIP distribution needs to feature compilable samples for clients and servers.
+                These samples also need to be used to run during the JCOP training course.
+            <script>td4.innerHTML=HTMLDecode(td4.innerHTML);</script></td>
+</tr>
+<tr class="rowNormal">
+<td valign="top" nowrap="true"><a href="https://its.cern.ch/jira/browse/DIP-153">Bug</a></td><td valign="top" nowrap="true"><b><a href="https://its.cern.ch/jira/browse/DIP-153">DIP-153</a></b></td><td valign="top"><b><a href="https://its.cern.ch/jira/browse/DIP-153">
+Dip Browser API memory leak with quality strings on uninitialized publications
+</a></b></td><td valign="top" id="td5">
+                When getting tags for 'dip/acc/LHC/Beam/BLM/BLMBCM2/PostMortemStatus' the DipBrowser allocates a huge amount of native memory (not java managed) and never ends.
+                Example code: 
+                
+                    
+                        
+                            try { DipBrowser dipBrowser = Dip.create().createDipBrowser(); String[] tags = dipBrowser.getTags("dip/acc/LHC/Beam/BLM/BLMBCM2/PostMortemStatus"); } catch (DipException e) { e.printStackTrace(); } 
+                    
+                
+                Using the latest java and native DIP libraries.
+            <script>td5.innerHTML=HTMLDecode(td5.innerHTML);</script></td>
+</tr>
+</tbody>
+</table>
+</p>
+</body>
+</html>
