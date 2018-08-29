@@ -102,8 +102,8 @@ int runDisplay_BIBL()
   map_HistToPad_PROF["h_MultiPROF3_DEGEN"] = {c_PROF, 6};
 
   std::map<TString,std::vector<TString>> map_HistToTitles;
-  map_HistToTitles["h_TF_UNIQ"]          = {"Time of Flight from XBPFs","Time, (ns)","Events"};
-  map_HistToTitles["h_TF_DEGEN"]         = {"Time of Flight from XBPFs","Time, (ns)","Events"};
+  map_HistToTitles["h_TF_UNIQ"]          = {"Time of Flight from XBTFs","Time, (ns)","Events"};
+  map_HistToTitles["h_TF_DEGEN"]         = {"Time of Flight from XBTFs","Time, (ns)","Events"};
   map_HistToTitles["h_MultiUS_DEGEN"]    = {"Event Coincidence Degeneracy","Combinations","Events"};
   map_HistToTitles["h_MultiDS_DEGEN"]    = {"Event Coincidence Degeneracy","Combinations","Events"};
   map_HistToTitles["h_Theta_UNIQ"]       = {"Deflection Angle, Unique Events","Deflection, (Deg)","Events"};

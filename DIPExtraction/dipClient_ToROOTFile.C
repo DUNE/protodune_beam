@@ -179,7 +179,7 @@ void Writer::dataReceived(const char *cSubscription, DipData &cDipData)
 
       writeAcqXBPF(cSubscription, cDipData, varsList[var_EVENTSDATA], acqTimestamp, acqCountsRec);
     }
-    else if(cSubscription[24]=='T')
+    else if(cSubscription[24]=='T' || cSubscription[24]=='O')
     {
       int nVars       = 0;
       const char **varsList = cDipData.getTags(nVars);
@@ -282,7 +282,7 @@ void Writer::writeAcqXBTF(const char *cSubscription, const DipData &cDipData, st
   const DipInt  *acqArray_FRAC    = cDipData.extractIntArray(arrayLength,  map_VarsList["FRAC"]);
   const DipLong *acqArray_SECONDS = cDipData.extractLongArray(arrayLength, map_VarsList["SECONDS"]);
   std::string s_Subscription = cSubscription;
-  std::string s_DetName      = s_Subscription.substr(27,36);
+  std::string s_DetName = s_Subscription.substr(27);
 
   br_Subscription   = s_Subscription; 
   br_DetName        = s_DetName; 

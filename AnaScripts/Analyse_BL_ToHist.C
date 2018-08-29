@@ -19,6 +19,27 @@ void plotPROF(std::vector<PROFCoincidenceRecord::PROFCoincidence> &vec_PROFCO, s
   TH1D *h_MultiPROF2 = new TH1D("h_MultiPROF2_"+sType, "h_MultiPROF2_"+sType,   7, -0.5,  6.5);
   TH1D *h_MultiPROF3 = new TH1D("h_MultiPROF3_"+sType, "h_MultiPROF3_"+sType,   7, -0.5,  6.5);
 
+  if(sType=="UNIQ")
+  {
+    SetHistTitles(h_CosTheta  , "Cosine of Deflection Angle, Unique Events",            "CosTheta",          "Events");
+    SetHistTitles(h_Momentum  , "Momentum, Unique Events",                              "Momentum, (GeV)",   "Events");
+    SetHistTitles(h_Theta     , "Deflection Angle, Unique Events",                      "Deflection, (Deg)", "Events");
+    SetHistTitles(h_FibComb   , "Number of Possible Fibre Combinations / Unique Event", "Combinations",      "Events");
+    SetHistTitles(h_MultiPROF1, "Event Coincidence Degeneracy", "Combinations","Events");
+    SetHistTitles(h_MultiPROF2, "Event Coincidence Degeneracy", "Combinations","Events");
+    SetHistTitles(h_MultiPROF3, "Event Coincidence Degeneracy", "Combinations","Events");
+  }
+  else
+  {
+    SetHistTitles(h_CosTheta  , "Cosine of Deflection Angle, Degenerate Events",            "CosTheta",          "Events");
+    SetHistTitles(h_Momentum  , "Momentum, Degenerate Events",                              "Momentum, (GeV)",   "Events");
+    SetHistTitles(h_Theta     , "Deflection Angle, Degenerate Events",                      "Deflection, (Deg)", "Events");
+    SetHistTitles(h_FibComb   , "Number of Possible Fibre Combinations / Degenerate Event", "Combinations",      "Events");
+    SetHistTitles(h_MultiPROF1, "Event Coincidence Degeneracy", "Combinations","Events");
+    SetHistTitles(h_MultiPROF2, "Event Coincidence Degeneracy", "Combinations","Events");
+    SetHistTitles(h_MultiPROF3, "Event Coincidence Degeneracy", "Combinations","Events");
+  }
+
   for(unsigned int i = 0; i < vec_PROFCO.size(); i++)
   {
     for(unsigned int j = 0; j < vec_PROFCO[i].getMomentum().size(); j++)
@@ -49,6 +70,19 @@ void plotTF(std::vector<TFCoincidenceRecord::TFCoincidence> &vec_TFCO, std::vect
   TH1D *h_TF      = new TH1D("h_TF_"     +sType,"h_TF_"      +sType, 50,    0,  500);
   TH1D *h_MultiUS = new TH1D("h_MultiUS_"+sType, "h_MultiUS_"+sType,  7, -0.5,  6.5); 
   TH1D *h_MultiDS = new TH1D("h_MultiDS_"+sType, "h_MultiDS_"+sType,  7, -0.5,  6.5); 
+
+  if(sType=="UNIQ")
+  {
+    SetHistTitles(h_TF,      "Time of Flight from XBTFs, Unique Events", "Time, (ns)",   "Events");
+    SetHistTitles(h_MultiUS, "Event Coincidence Degeneracy, US",         "Combinations", "Events");
+    SetHistTitles(h_MultiDS, "Event Coincidence Degeneracy, DS",         "Combinations", "Events");
+  }
+  else
+  {
+    SetHistTitles(h_TF,      "Time of Flight from XBTFs, Degenerate Events", "Time, (ns)",   "Events");
+    SetHistTitles(h_MultiUS, "Event Coincidence Degeneracy, US",             "Combinations", "Events");
+    SetHistTitles(h_MultiDS, "Event Coincidence Degeneracy, DS",             "Combinations", "Events");
+  }
 
   for(unsigned int i = 0; i < vec_TFCO.size(); i++)
   {
@@ -94,9 +128,18 @@ int main(int argc, char *argv[])
     for(unsigned int det = 0; det < vec_Detectors.size(); det++)
     {
       std::string s_DetName = vec_Detectors.at(det);
-      std::string s_DetType = s_DetName.substr(0,4);
+      std::string s_DetType;
+      
+      if(s_DetName[0]=='G')
+      {
+        s_DetType = "XBTF"; 
+      }
+      else
+      {
+        s_DetType = s_DetName.substr(0,4);
+      }
 
-      Detector detector(s_DetName, s_DetType, "XBH4_"+s_DetType+"_022_"+s_DetName.substr(7,9));
+      Detector detector(s_DetName, s_DetType, (s_DetName[0]=='G' ? "XBH4_"+s_DetType+"_"+s_DetName : "XBH4_"+s_DetType+"_022_"+s_DetName.substr(7)));
       map_Detector[s_DetName] = detector;
       detector.printDescription();
     }

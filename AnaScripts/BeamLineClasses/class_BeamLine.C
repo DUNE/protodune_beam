@@ -108,7 +108,8 @@ void BeamLine::findTFCoincidences(std::map<std::string,Detector> &cMapDetectors)
   unsigned int index = 0;
   for(auto detector : cMapDetectors)
   {
-    if(!detector.first.find("XBTF"))
+    //if(!detector.first.find("XBTF"))
+    if(detector.second.getType()=="XBTF")
     {
       vec_TFDet.push_back(detector.second);
       fXBTFDetNameToIndex[detector.first] = index;
@@ -396,7 +397,7 @@ void BeamLine::dumpBIData(std::map<std::string,Detector> &cMapDetectors, TString
 
   for(auto detector : cMapDetectors)
   {
-    if(detector.second.fType=="XBPF")
+    if(detector.second.getType()=="XBPF")
     {
       std::vector<AcquisitionXBPF> vec_Acq;
       detector.second.getAcquisitions(vec_Acq);
@@ -461,7 +462,7 @@ void BeamLine::dumpBIData(std::map<std::string,Detector> &cMapDetectors, TString
 
   for(auto detector : cMapDetectors)
   {
-    if(detector.second.fType=="XBTF")
+    if(detector.second.getType()=="XBTF")
     {
       std::vector<AcquisitionXBTF> vec_Acq;
       detector.second.getAcquisitions(vec_Acq);

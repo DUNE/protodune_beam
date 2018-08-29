@@ -16,6 +16,9 @@ void plot_dTAcq(std::map<std::string,Detector> &map_Detector, std::map<std::stri
     if(it_Detector.second.getType()=="XBPF")
     {
       TH1I *h_dTAcq = new TH1I("h_dTAcq_"+(TString)it_Detector.second.getDetName(),"h_dTAcq_"+(TString)it_Detector.second.getDetName(), 71, -0.5, 70.5);
+
+      SetHistTitles(h_dTAcq, "Time Between DIP Data Acquisitions", "Time, (s)", "Acquisition Pairs");
+
       std::vector<AcquisitionXBPF> vec_DetAcq;
       it_Detector.second.getAcquisitions(vec_DetAcq);
       if(vec_DetAcq.size()!=0)
@@ -31,6 +34,9 @@ void plot_dTAcq(std::map<std::string,Detector> &map_Detector, std::map<std::stri
     else if(it_Detector.second.getType()=="XBTF")
     {
       TH1I *h_dTAcq = new TH1I("h_dTAcq_"+(TString)it_Detector.second.getDetName(),"h_dTAcq_"+(TString)it_Detector.second.getDetName(), 71, -0.5, 70.5);
+
+      SetHistTitles(h_dTAcq, "Time Between DIP Data Acquisitions", "Time, (s)", "Acquisition Pairs");
+
       std::vector<AcquisitionXBTF> vec_DetAcq;
       it_Detector.second.getAcquisitions(vec_DetAcq);
       if(vec_DetAcq.size()!=0)
@@ -56,6 +62,10 @@ void plot_AcqLevel(std::map<std::string,Detector> &map_Detector, std::map<std::s
     {
       TH1I *h_NEventsPerAcq = new TH1I("h_NEventsPerAcq_"+(TString)it_Detector.second.getDetName(),"h_NEventsPerAcq_"+(TString)it_Detector.second.getDetName(), 3001, -0.5, 3000.5);
       TH1I *h_FracBuffer    = new TH1I("h_FracBuffer_"   +(TString)it_Detector.second.getDetName(),"h_FracBuffer_"   +(TString)it_Detector.second.getDetName(), 11,  -0.05,   1.05);
+
+      SetHistTitles(h_NEventsPerAcq, "Number of Events / Acqusition",       "No. Events", "Acquisitions");
+      SetHistTitles(h_FracBuffer,    "Fraction of EventsData Array Filled", "Fraction",   "Acquisitions");
+
       std::vector<AcquisitionXBPF> vec_DetAcq;
       it_Detector.second.getAcquisitions(vec_DetAcq);
       for(unsigned int j = 0; j < vec_DetAcq.size(); j++)
@@ -70,6 +80,10 @@ void plot_AcqLevel(std::map<std::string,Detector> &map_Detector, std::map<std::s
     {
       TH1I *h_NEventsPerAcq = new TH1I("h_NEventsPerAcq_"+(TString)it_Detector.second.getDetName(),"h_NEventsPerAcq_"+(TString)it_Detector.second.getDetName(), 30001, -0.5, 30000.5);
       TH1I *h_FracBuffer    = new TH1I("h_FracBuffer_"   +(TString)it_Detector.second.getDetName(),"h_FracBuffer_"   +(TString)it_Detector.second.getDetName(), 11,  -0.05,   1.05);
+
+      SetHistTitles(h_NEventsPerAcq, "Number of Events / Acqusition",       "No. Events", "Acquisitions");
+      SetHistTitles(h_FracBuffer,    "Fraction of EventsData Array Filled", "Fraction",   "Acquisitions");
+
       std::vector<AcquisitionXBTF> vec_DetAcq;
       it_Detector.second.getAcquisitions(vec_DetAcq);
       for(unsigned int j = 0; j < vec_DetAcq.size(); j++)
@@ -113,11 +127,19 @@ void plot_EventLevel(std::map<std::string,Detector> &map_Detector, std::map<std:
       TH1I *h_EventTS                = new TH1I("h_EventTS_"               +(TString)it_Detector.second.getDetName(),"h_EventTS_"               
                                                                            +(TString)it_Detector.second.getDetName(),nBins, tLow, upperbin); 
       TH1I *h_EventTimeSinceFirst    = new TH1I("h_EventTimeSinceFirst_"   +(TString)it_Detector.second.getDetName(),"h_EventTimeSinceFirst_"   
-                                                                           +(TString)it_Detector.second.getDetName(),1000,    0,   5e9); 
+                                                                           +(TString)it_Detector.second.getDetName(),100,    0,   5e9); 
       TH1I *h_TriggerTimeSinceFirst  = new TH1I("h_TriggerTimeSinceFirst_" +(TString)it_Detector.second.getDetName(),"h_TriggerTimeSinceFirst_" 
-                                                                           +(TString)it_Detector.second.getDetName(),1000,    0,   5e9); 
+                                                                           +(TString)it_Detector.second.getDetName(),100,    0,   5e9); 
       TH1D *h_NHitsPerFibre          = new TH1D("h_NHitsPerFibre_"         +(TString)it_Detector.second.getDetName(),"h_NHitsPerFibre_"
                                                                            +(TString)it_Detector.second.getDetName(), 193, -0.5, 192.5);
+
+      SetHistTitles(h_NFibresPerEvent      , "Number of Fibres Hit / Event",             "No. Fibres",              "Events"  ); 
+      SetHistTitles(h_Span                 , "Hit Fibre Span",                           "Difference in Fibre No.", "Events"  ); 
+      SetHistTitles(h_TriggerTS            , "Trigger Timestamp",                        "Unix Time",               "Triggers"); 
+      SetHistTitles(h_EventTS              , "Event Timestamp",                          "Unix Time",               "Events"  ); 
+      SetHistTitles(h_EventTimeSinceFirst  , "Event Time Elapsed Since First Event",     "Time Elapsed, (ns)",      "Events"  ); 
+      SetHistTitles(h_TriggerTimeSinceFirst, "Trigger Time Elapsed Since First Trigger", "Time Elapsed, (ns)",      "Triggers"); 
+      SetHistTitles(h_NHitsPerFibre        , "Number of Hits / Fibre",                   "Fibre No.",               "Hits"    ); 
 
       std::vector<AcquisitionXBPF> vec_DetAcq;
       it_Detector.second.getAcquisitions(vec_DetAcq);
@@ -178,14 +200,20 @@ void plot_EventLevel(std::map<std::string,Detector> &map_Detector, std::map<std:
         upperbin = tLow + sensitivity;
       }
 
-      TH1I *h_EventTS_SecondsPart     = new TH1I("h_EventTS_SecondsPart_"    +(TString)it_Detector.second.getDetName(),"h_EventTS_SecondsPart_"             
-                                                                             +(TString)it_Detector.second.getDetName(),1000, tLow, upperbin);
-      TH1I *h_EventTS_NanosecondsPart = new TH1I("h_EventTS_NanosecondsPart_"+(TString)it_Detector.second.getDetName(),"h_EventTS_NanosecondsPart_"             
-                                                                             +(TString)it_Detector.second.getDetName(),1000, 0, 1e9);
-      TH1I *h_EventTS                 = new TH1I("h_EventTS_"                +(TString)it_Detector.second.getDetName(),"h_EventTS_"               
-                                                                             +(TString)it_Detector.second.getDetName(),1000, tLow, upperbin); 
-      TH1I *h_EventTimeSinceFirst     = new TH1I("h_EventTimeSinceFirst_"    +(TString)it_Detector.second.getDetName(),"h_EventTimeSinceFirst_"   
-                                                                             +(TString)it_Detector.second.getDetName(),1000,    0,   5e9); 
+      TH1I *h_EventTS_SecondsPart     = new TH1I("h_EventTS_SecondsPart_"    +(TString)it_Detector.second.getDetName(), "h_EventTS_SecondsPart_"             
+                                                                             +(TString)it_Detector.second.getDetName(), 100, tLow, upperbin);
+      TH1I *h_EventTS_NanosecondsPart = new TH1I("h_EventTS_NanosecondsPart_"+(TString)it_Detector.second.getDetName(), "h_EventTS_NanosecondsPart_"             
+                                                                             +(TString)it_Detector.second.getDetName(), 100, 0, 1e9);
+      TH1I *h_EventTS                 = new TH1I("h_EventTS_"                +(TString)it_Detector.second.getDetName(), "h_EventTS_"               
+                                                                             +(TString)it_Detector.second.getDetName(), 100, tLow, upperbin); 
+      TH1I *h_EventTimeSinceFirst     = new TH1I("h_EventTimeSinceFirst_"    +(TString)it_Detector.second.getDetName(), "h_EventTimeSinceFirst_"   
+                                                                             +(TString)it_Detector.second.getDetName(), 100, 0, 5e9); 
+
+      SetHistTitles(h_EventTS_SecondsPart,     "Event Timestamp Seconds Part",         "Unix Time",          "Events");
+      SetHistTitles(h_EventTS_NanosecondsPart, "Event Timestamp Nanoseconds Part",     "Time, (ns)",         "Events");
+      SetHistTitles(h_EventTS,                 "Event Timestamp",                      "Time, (s)",          "Events");
+      SetHistTitles(h_EventTimeSinceFirst,     "Event Time Elapsed Since First Event", "Time Elapsed, (ns)", "Events");
+
       std::vector<AcquisitionXBTF> vec_DetAcq;
       it_Detector.second.getAcquisitions(vec_DetAcq);
       for(unsigned int j = 0; j < vec_DetAcq.size(); j++)
@@ -228,6 +256,27 @@ void plotPROF(std::vector<PROFCoincidenceRecord::PROFCoincidence> &vec_PROFCO, s
   TH1D *h_MultiPROF2 = new TH1D("h_MultiPROF2_"+sType, "h_MultiPROF2_"+sType,   7, -0.5,  6.5);
   TH1D *h_MultiPROF3 = new TH1D("h_MultiPROF3_"+sType, "h_MultiPROF3_"+sType,   7, -0.5,  6.5);
 
+  if(sType=="UNIQ")
+  {
+    SetHistTitles(h_CosTheta  , "Cosine of Deflection Angle, Unique Events",            "CosTheta",          "Events");
+    SetHistTitles(h_Momentum  , "Momentum, Unique Events",                              "Momentum, (GeV)",   "Events");
+    SetHistTitles(h_Theta     , "Deflection Angle, Unique Events",                      "Deflection, (Deg)", "Events");
+    SetHistTitles(h_FibComb   , "Number of Possible Fibre Combinations / Unique Event", "Combinations",      "Events");
+    SetHistTitles(h_MultiPROF1, "Event Coincidence Degeneracy", "Combinations","Events");
+    SetHistTitles(h_MultiPROF2, "Event Coincidence Degeneracy", "Combinations","Events");
+    SetHistTitles(h_MultiPROF3, "Event Coincidence Degeneracy", "Combinations","Events");
+  }
+  else
+  {
+    SetHistTitles(h_CosTheta  , "Cosine of Deflection Angle, Degenerate Events",            "CosTheta",          "Events");
+    SetHistTitles(h_Momentum  , "Momentum, Degenerate Events",                              "Momentum, (GeV)",   "Events");
+    SetHistTitles(h_Theta     , "Deflection Angle, Degenerate Events",                      "Deflection, (Deg)", "Events");
+    SetHistTitles(h_FibComb   , "Number of Possible Fibre Combinations / Degenerate Event", "Combinations",      "Events");
+    SetHistTitles(h_MultiPROF1, "Event Coincidence Degeneracy", "Combinations","Events");
+    SetHistTitles(h_MultiPROF2, "Event Coincidence Degeneracy", "Combinations","Events");
+    SetHistTitles(h_MultiPROF3, "Event Coincidence Degeneracy", "Combinations","Events");
+  }
+
   for(unsigned int i = 0; i < vec_PROFCO.size(); i++)
   {
     for(unsigned int j = 0; j < vec_PROFCO[i].getMomentum().size(); j++)
@@ -258,6 +307,19 @@ void plotTF(std::vector<TFCoincidenceRecord::TFCoincidence> &vec_TFCO, std::vect
   TH1D *h_TF      = new TH1D("h_TF_"     +sType,"h_TF_"      +sType, 50,    0,  500);
   TH1D *h_MultiUS = new TH1D("h_MultiUS_"+sType, "h_MultiUS_"+sType,  7, -0.5,  6.5); 
   TH1D *h_MultiDS = new TH1D("h_MultiDS_"+sType, "h_MultiDS_"+sType,  7, -0.5,  6.5); 
+
+  if(sType=="UNIQ")
+  {
+    SetHistTitles(h_TF,      "Time of Flight from XBTFs, Unique Events", "Time, (ns)",   "Events");
+    SetHistTitles(h_MultiUS, "Event Coincidence Degeneracy, US",         "Combinations", "Events");
+    SetHistTitles(h_MultiDS, "Event Coincidence Degeneracy, DS",         "Combinations", "Events");
+  }
+  else
+  {
+    SetHistTitles(h_TF,      "Time of Flight from XBTFs, Degenerate Events", "Time, (ns)",   "Events");
+    SetHistTitles(h_MultiUS, "Event Coincidence Degeneracy, US",             "Combinations", "Events");
+    SetHistTitles(h_MultiDS, "Event Coincidence Degeneracy, DS",             "Combinations", "Events");
+  }
 
   for(unsigned int i = 0; i < vec_TFCO.size(); i++)
   {
@@ -303,9 +365,18 @@ int main(int argc, char *argv[])
     for(unsigned int det = 0; det < vec_Detectors.size(); det++)
     {
       std::string s_DetName = vec_Detectors.at(det);
-      std::string s_DetType = s_DetName.substr(0,4);
+      std::string s_DetType;
+      
+      if(s_DetName[0]=='G')
+      {
+        s_DetType = "XBTF"; 
+      }
+      else
+      {
+        s_DetType = s_DetName.substr(0,4);
+      }
 
-      Detector detector(s_DetName, s_DetType, "XBH4_"+s_DetType+"_022_"+s_DetName.substr(7,9));
+      Detector detector(s_DetName, s_DetType, (s_DetName[0]=='G' ? "XBH4_"+s_DetType+"_"+s_DetName : "XBH4_"+s_DetType+"_022_"+s_DetName.substr(7)));
       map_Detector[s_DetName] = detector;
       detector.printDescription();
     }

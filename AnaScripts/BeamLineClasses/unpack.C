@@ -79,3 +79,21 @@ void unpackDIPROOT(std::map<std::string,Detector> &cMapDetector, std::string con
 
   return;
 }
+
+void SetHistTitles(TH1I* &h, TString const &title, TString const &xTitle, TString const &yTitle)
+{
+  h->SetTitle(title);
+  h->GetXaxis()->SetTitle(xTitle);
+  h->GetYaxis()->SetTitle(yTitle);
+
+  return;
+}
+
+void SetHistTitles(TH1D* &h, TString const &title, TString const &xTitle, TString const &yTitle)
+{
+  h->SetTitle(title);
+  h->GetXaxis()->SetTitle(xTitle);
+  h->GetYaxis()->SetTitle(yTitle);
+
+  return;
+}

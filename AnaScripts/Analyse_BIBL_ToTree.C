@@ -39,9 +39,18 @@ int main(int argc, char *argv[])
     for(unsigned int det = 0; det < vec_Detectors.size(); det++)
     {
       std::string s_DetName = vec_Detectors.at(det);
-      std::string s_DetType = s_DetName.substr(0,4);
+      std::string s_DetType;
+      
+      if(s_DetName[0]=='G')
+      {
+        s_DetType = "XBTF"; 
+      }
+      else
+      {
+        s_DetType = s_DetName.substr(0,4);
+      }
 
-      Detector detector(s_DetName, s_DetType, "XBH4_"+s_DetType+"_022_"+s_DetName.substr(7,9));
+      Detector detector(s_DetName, s_DetType, (s_DetName[0]=='G' ? "XBH4_"+s_DetType+"_"+s_DetName : "XBH4_"+s_DetType+"_022_"+s_DetName.substr(7)));
       map_Detector[s_DetName] = detector;
       detector.printDescription();
     }

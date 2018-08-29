@@ -73,7 +73,7 @@ void TFCoincidenceRecord::printDegenerate(std::map<std::string,Detector> &cMapDe
   std::vector<std::vector<AcquisitionXBTF>> vec_DetAcq(cMapDetectors.size());
   for(auto det : cMapDetectors)
   {
-    if(!det.first.find("XBTF"))
+    if(det.second.getType()=="XBTF")
     {
       det.second.getAcquisitions(vec_DetAcq[cXBTFNameToIndex[det.first]]);     
     }
@@ -110,7 +110,7 @@ void TFCoincidenceRecord::printUnique(std::map<std::string,Detector> &cMapDetect
   std::vector<std::vector<AcquisitionXBTF>> vec_DetAcq(cMapDetectors.size());
   for(auto det : cMapDetectors)
   {
-    if(!det.first.find("XBTF"))
+    if(det.second.getType()=="XBTF")
     {
       det.second.getAcquisitions(vec_DetAcq[cXBTFNameToIndex[det.first]]);     
     }
@@ -148,7 +148,7 @@ void TFCoincidenceRecord::dumpDegenerate(std::map<std::string,Detector> &cMapDet
   std::vector<std::vector<AcquisitionXBTF>> vec_DetAcq(cMapDetectors.size());
   for(auto det : cMapDetectors)
   {
-    if(!det.first.find("XBTF"))
+    if(det.second.getType()=="XBTF")
     {
       det.second.getAcquisitions(vec_DetAcq[cXBTFNameToIndex[det.first]]);     
       map_XBTFIndexToName[cXBTFNameToIndex[det.first]] = det.first;
@@ -231,7 +231,7 @@ void TFCoincidenceRecord::dumpUnique(std::map<std::string,Detector> &cMapDetecto
   std::vector<std::vector<AcquisitionXBTF>> vec_DetAcq(cMapDetectors.size());
   for(auto det : cMapDetectors)
   {
-    if(!det.first.find("XBTF"))
+    if(det.second.getType()=="XBTF")
     {
       det.second.getAcquisitions(vec_DetAcq[cXBTFNameToIndex[det.first]]);     
       map_XBTFIndexToName[cXBTFNameToIndex[det.first]] = det.first;
