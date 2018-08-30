@@ -154,8 +154,6 @@ void Writer::dataReceived(const char *cSubscription, DipData &cDipData)
   std::cout.precision(13);
   std::cout << "dataReceived(), TIMESTAMP: " << acqTimestamp_Seconds << ", SUBSCRIPTION: " << cSubscription << ". DATA QUALITY FLAG: " << cDipData.extractDataQuality() << std::endl;
 
-  reopenFile(acqTimestamp_Seconds);
-
   if(cSubscription[24]=='B')
   {
     int nVars = 0;
@@ -170,6 +168,8 @@ void Writer::dataReceived(const char *cSubscription, DipData &cDipData)
   {
     if(cSubscription[24]=='P')
     {
+      reopenFile(acqTimestamp_Seconds);
+
       int nVars             = 0;
       int var_COUNTSRECORDS = 5;
       int var_EVENTSDATA    = 11;
@@ -181,6 +181,8 @@ void Writer::dataReceived(const char *cSubscription, DipData &cDipData)
     }
     else if(cSubscription[24]=='T' || cSubscription[24]=='O')
     {
+      reopenFile(acqTimestamp_Seconds);
+
       int nVars       = 0;
       const char **varsList = cDipData.getTags(nVars);
       std::map<std::string,const char*> map_VarsList;
