@@ -57,12 +57,18 @@ void unpackDIPROOT(std::map<std::string,Detector> &cMapDetector, std::string con
       {
         nEvents = cZeroSuppress ? br_CountsRec : br_TTS_LSB->size();
       }
+      unsigned int nNonZeroCount = 0;
       for(unsigned int j = 0; j < nEvents; j++)
       {
         std::array<unsigned int, 6> arr_Fibre;
         acq.addEventRecord({br_TTS_LSB->at(j), br_TTS_MSB->at(j), br_ETS_LSB->at(j), br_ETS_MSB->at(j), {br_Fibres0->at(j), br_Fibres1->at(j), br_Fibres2->at(j), 
                                                                                                          br_Fibres3->at(j), br_Fibres4->at(j), br_Fibres5->at(j)}});
+        if(br_TTS_MSB->at(j)>0.)
+        {
+          nNonZeroCount++;
+        }
       }
+      acq.setNNonZeroEvents(nNonZeroCount);
       cMapDetector[*br_DetName].addAcquisition(acq);
     }
     else if(*br_DetType=="XBTF" && cMapDetector.count(*br_DetName)>0)

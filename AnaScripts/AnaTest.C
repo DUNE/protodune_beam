@@ -83,6 +83,7 @@ int main(int argc, char *argv[])
     //beamline.printPROFCoincidencesDegenerate(map_Detector);
     //beamline.printPROFCoincidencesUnique(map_Detector);
 
+    beamline.dumpBIData  (map_Detector,(TString)s_OutDir+"Analyse_BL_ToTree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
     beamline.dumpTFCoincidencesDegenerate  (map_Detector,(TString)s_OutDir+"Analyse_BL_ToTree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
     beamline.dumpTFCoincidencesUnique      (map_Detector,(TString)s_OutDir+"Analyse_BL_ToTree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
     beamline.dumpPROFCoincidencesDegenerate(map_Detector,(TString)s_OutDir+"Analyse_BL_ToTree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");

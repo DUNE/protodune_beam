@@ -70,7 +70,7 @@ AcquisitionXBPF::EventRecordHR AcquisitionXBPF::decodeFibres(EventRecordRaw cons
   {
     fLastTriggerTimestamp = triggerTimestamp/1.e9;
   }
-  if(triggerTimestamp/1.e9<fFirstTriggerTimestamp)
+  if(triggerTimestamp/1.e9<fFirstTriggerTimestamp && triggerTimestamp!=0)
   {
     fFirstTriggerTimestamp = triggerTimestamp/1.e9;
   }
@@ -132,7 +132,7 @@ void AcquisitionXBPF::printRaw()
   else
   {
     std::cout << "***********************************************************************************" << std::endl;
-    std::cout << "TIMESTAMP: " << fTimestamp << ", NUMBER OF EVENTS RECORDED: " << fNEventRec          << std::endl;
+    std::cout << "TIMESTAMP: " << fTimestamp << ", NUMBER OF EVENTS RECORDED: " << fNEventRec  << ", NUMBER OF NONZERO EVENTS: " << fNNonZeroEvents << std::endl;
     std::cout << std::endl;
     for(unsigned int i = 0; i < fVecDataRec.size(); i++)
     {
@@ -162,7 +162,7 @@ void AcquisitionXBPF::printHR()
   else
   {
     std::cout << "***********************************************************************************" << std::endl;
-    std::cout << "TIMESTAMP: " << fTimestamp << ", NUMBER OF EVENTS RECORDED: " << fNEventRec          << std::endl;
+    std::cout << "TIMESTAMP: " << fTimestamp << ", NUMBER OF EVENTS RECORDED: " << fNEventRec  << ", NUMBER OF NONZERO EVENTS: " << fNNonZeroEvents << std::endl;
     std::cout << std::endl;
     for(unsigned int i = 0; i < fVecDataRecHR.size(); i++)
     {

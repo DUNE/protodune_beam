@@ -12,6 +12,7 @@ class AcquisitionXBPF{
     bool   fIsEmpty;
     double fTimestamp;
     unsigned int fNEventRec;
+    unsigned int fNNonZeroEvents;
     double fFirstTriggerTimestamp;
     double fLastTriggerTimestamp;
     double fCurrent;
@@ -38,6 +39,7 @@ class AcquisitionXBPF{
     double       getTimestamp();
     double       getCurrent();
     unsigned int getNEventRec();
+    unsigned int getNNonZeroEvents(){return fNNonZeroEvents;};
     std::vector<EventRecordRaw> getDataRaw();
     std::vector<EventRecordHR>  getDataHR();
     void addAcqDetails(double cTimestamp, unsigned int cNEventRec);
@@ -46,6 +48,7 @@ class AcquisitionXBPF{
     void printHR();
     void setEmpty(bool cIsEmpty);
     void setCurrent(double cCurrent);
+    void setNNonZeroEvents(unsigned int cNNonZeroEvents){fNNonZeroEvents = cNNonZeroEvents; return;}
 
   private:
     EventRecordHR fEventRecordHR;
