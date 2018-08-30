@@ -54,14 +54,6 @@ double BeamLine::getMomentum(double const &cCosTheta, double const &cCurrent)
   return (299792458*L_B*LB/(1.e9*std::acos(cCosTheta))); 
 }
 
-double BeamLine::getMass(double const &cMomentum, double const &cPathLength, double const &cTimeOfFlight)
-{
-  double a    = 299792458*cTimeOfFlight/cPathLength;
-  double mass = (a*a - 1 >= 0 ? (cMomentum/299792458)*std::sqrt(a*a-1) : -1.);
-
-  return mass;
-}
-
 void BeamLine::considerMomenta(std::vector<unsigned int> const &cPROF1Fibs, std::vector<unsigned int> const &cPROF2Fibs, std::vector<unsigned int> const &cPROF3Fibs, double const &cCurrent,
                                std::vector<double> &cCosTheta, std::vector<double> &cTheta, std::vector<double> &cMomentum)
 {
@@ -113,6 +105,7 @@ void BeamLine::findTFCoincidences(std::map<std::string,Detector> &cMapDetectors)
     {
       vec_TFDet.push_back(detector.second);
       fXBTFDetNameToIndex[detector.first] = index;
+      fXBTFIndexToDetName[index] = detector.first;
       index++;
     }
   }
@@ -123,7 +116,11 @@ void BeamLine::findTFCoincidences(std::map<std::string,Detector> &cMapDetectors)
     for(unsigned int j = 0; j < vec_TFDet.size(); j++)
     {
       //ONLY COMPARE ONE US AND DS PAIR ONCE.
-      if(i < j)
+      //if(i < j)
+      if((fXBTFIndexToDetName[i]=="XBTF022687A" && fXBTFIndexToDetName[j]=="XBTF022716A")||
+         (fXBTFIndexToDetName[i]=="XBTF022687A" && fXBTFIndexToDetName[j]=="XBTF022716B")||
+         (fXBTFIndexToDetName[i]=="XBTF022687B" && fXBTFIndexToDetName[j]=="XBTF022716A")||
+         (fXBTFIndexToDetName[i]=="XBTF022687B" && fXBTFIndexToDetName[j]=="XBTF022716B"))
       {
         std::cout << "CALCULATING TF BETWEEN: " << vec_TFDet[i].getDetName() << " AND " << vec_TFDet[j].getDetName() << std::endl;
 
@@ -519,5 +516,83 @@ void BeamLine::dumpPROFCoincidencesDegenerate(std::map<std::string,Detector> &cM
 void BeamLine::dumpPROFCoincidencesUnique(std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName)
 {
   fPROFCoincdenceRecord.dumpUnique(cMapDetectors, cFilePathName);
+  return;
+}
+
+void BeamLine::dumpTFPROFCoincidencesDegenerate (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName)
+{
+  fCombinedCoincidenceRecord.dumpDegenerate(cMapDetectors, fXBTFDetNameToIndex, cFilePathName, fTFCoincidenceRecord);
+  return;
+}
+
+void BeamLine::dumpTFPROFCoincidencesUnique(std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName)
+{
+  fCombinedCoincidenceRecord.dumpDegenerate(cMapDetectors, fXBTFDetNameToIndex, cFilePathName, fTFCoincidenceRecord);
+  return;
+}
+
+void BeamLine::findTFPROFCoincidences(std::map<std::string,Detector> &cMapDetectors, bool const &cUseUniqueCoincidencesOnly)
+{
+  std::vector<TFCoincidenceRecord::TFCoincidence>     vec_TFCo;  
+  std::vector<PROFCoincidenceRecord::PROFCoincidence> vec_PROFCo;
+
+  if(cUseUniqueCoincidencesOnly)
+  {
+    vec_TFCo  = fTFCoincidenceRecord.getTFCoincidencesUnique();
+    vec_PROFCo = fPROFCoincdenceRecord.getPROFCoincidencesUnique();
+  }
+  else
+  {
+    vec_TFCo  = fTFCoincidenceRecord.getTFCoincidencesDegenerate();
+    vec_PROFCo = fPROFCoincdenceRecord.getPROFCoincidencesDegenerate();
+  }
+
+  std::vector<AcquisitionXBPF> vec_DetAcqPROF1;
+  cMapDetectors["XBPF022697"].getAcquisitions(vec_DetAcqPROF1);
+  std::vector<AcquisitionXBPF> vec_DetAcqPROF3;
+  cMapDetectors["XBPF022702"].getAcquisitions(vec_DetAcqPROF3);
+
+  for(unsigned int i = 0; i < vec_TFCo.size(); i++)
+  {
+    if((fXBTFIndexToDetName[vec_TFCo[i].fDetUS]=="XBTF022687A" && fXBTFIndexToDetName[vec_TFCo[i].fDetDS]=="XBTF022716A") ||
+       (fXBTFIndexToDetName[vec_TFCo[i].fDetUS]=="XBTF022687A" && fXBTFIndexToDetName[vec_TFCo[i].fDetDS]=="XBTF022716B") ||
+       (fXBTFIndexToDetName[vec_TFCo[i].fDetUS]=="XBTF022687B" && fXBTFIndexToDetName[vec_TFCo[i].fDetDS]=="XBTF022716A") ||
+       (fXBTFIndexToDetName[vec_TFCo[i].fDetUS]=="XBTF022687B" && fXBTFIndexToDetName[vec_TFCo[i].fDetDS]=="XBTF022716B"))
+    {
+      std::vector<AcquisitionXBTF> vec_AcqUS;
+      cMapDetectors[fXBTFIndexToDetName[vec_TFCo[i].fDetUS]].getAcquisitions(vec_AcqUS);
+      std::vector<AcquisitionXBTF> vec_AcqDS;
+      cMapDetectors[fXBTFIndexToDetName[vec_TFCo[i].fDetDS]].getAcquisitions(vec_AcqDS);
+
+      std::vector<PROFCoincidenceRecord::PROFCoincidence> vec_MatchedPROFCo;
+      for(unsigned int j = 0; vec_PROFCo.size(); j++)
+      {
+        if((double)vec_DetAcqPROF1[vec_PROFCo[j].fAcqPROF1].getDataHR()[vec_PROFCo[j].fEventPROF1].fTriggerTimestamp>=vec_AcqUS[vec_TFCo[i].fAcqUS].getDataHR()[vec_TFCo[i].fEventUS].fSeconds_FullTime*1e9 &&
+           (double)vec_DetAcqPROF1[vec_PROFCo[j].fAcqPROF3].getDataHR()[vec_PROFCo[j].fEventPROF3].fTriggerTimestamp<=vec_AcqDS[vec_TFCo[i].fAcqDS].getDataHR()[vec_TFCo[i].fEventDS].fSeconds_FullTime*1e9)
+        {
+          vec_MatchedPROFCo.push_back(vec_PROFCo[j]);
+          std::array<unsigned int,6> coincidenceIndices = {vec_PROFCo[j].fAcqPROF1, vec_PROFCo[j].fEventPROF1,
+                                                           vec_PROFCo[j].fAcqPROF2, vec_PROFCo[j].fEventPROF2,
+                                                           vec_PROFCo[j].fAcqPROF3, vec_PROFCo[j].fEventPROF3};
+          fCombinedCoincidenceRecord.addMultiplicityInfo(coincidenceIndices);
+        }
+      }
+      CombinedCoincidenceRecord::TFPROFCoincidence tfprofCo(vec_TFCo[i], vec_MatchedPROFCo);
+      fCombinedCoincidenceRecord.addTFPROFCoincidence(tfprofCo);
+    }
+  }
+  
+  return;
+}
+
+void BeamLine::printTFPROFCoincidencesDegenerate(std::map<std::string,Detector> &cMapDetectors)
+{
+  fCombinedCoincidenceRecord.printDegenerate(cMapDetectors, fXBTFDetNameToIndex, fTFCoincidenceRecord);
+  return;
+}
+
+void BeamLine::printTFPROFCoincidencesUnique(std::map<std::string,Detector> &cMapDetectors)
+{
+  fCombinedCoincidenceRecord.printUnique(cMapDetectors, fXBTFDetNameToIndex, fTFCoincidenceRecord);
   return;
 }

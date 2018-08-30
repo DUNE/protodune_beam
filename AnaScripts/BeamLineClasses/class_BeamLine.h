@@ -19,33 +19,39 @@ class BeamLine{
     std::vector<TFCoincidenceRecord::TFCoincidence> getTFCoincidencesUnique(); 
     std::vector<PROFCoincidenceRecord::PROFCoincidence> getPROFCoincidencesDegenerate(); 
     std::vector<PROFCoincidenceRecord::PROFCoincidence> getPROFCoincidencesUnique(); 
-    void dumpBIData                     (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
-    void dumpTFCoincidencesDegenerate   (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
-    void dumpTFCoincidencesUnique       (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
-    void dumpPROFCoincidencesDegenerate (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
-    void dumpPROFCoincidencesUnique     (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
-    void findTFCoincidences             (std::map<std::string,Detector> &cMapDetectors); 
-    void findPROFCoincidences           (std::map<std::string,Detector> &cMapDetectors); 
-    void printTFCoincidencesDegenerate  (std::map<std::string,Detector> &cMapDetectors);
-    void printTFCoincidencesUnique      (std::map<std::string,Detector> &cMapDetectors);
-    void printPROFCoincidencesDegenerate(std::map<std::string,Detector> &cMapDetectors);
-    void printPROFCoincidencesUnique    (std::map<std::string,Detector> &cMapDetectors);
+    void dumpBIData                       (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
+    void dumpTFCoincidencesDegenerate     (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
+    void dumpTFCoincidencesUnique         (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
+    void dumpPROFCoincidencesDegenerate   (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
+    void dumpPROFCoincidencesUnique       (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
+    void dumpTFPROFCoincidencesDegenerate (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
+    void dumpTFPROFCoincidencesUnique     (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
+    void findTFCoincidences               (std::map<std::string,Detector> &cMapDetectors); 
+    void findPROFCoincidences             (std::map<std::string,Detector> &cMapDetectors); 
+    void findTFPROFCoincidences           (std::map<std::string,Detector> &cMapDetectors, bool const &cUseUniqueCoincidencesOnly); 
+    void printTFCoincidencesDegenerate    (std::map<std::string,Detector> &cMapDetectors);
+    void printTFCoincidencesUnique        (std::map<std::string,Detector> &cMapDetectors);
+    void printPROFCoincidencesDegenerate  (std::map<std::string,Detector> &cMapDetectors);
+    void printPROFCoincidencesUnique      (std::map<std::string,Detector> &cMapDetectors);
+    void printTFPROFCoincidencesDegenerate(std::map<std::string,Detector> &cMapDetectors); 
+    void printTFPROFCoincidencesUnique    (std::map<std::string,Detector> &cMapDetectors); 
 
   private:
-    TFCoincidenceRecord   fTFCoincidenceRecord;
-    PROFCoincidenceRecord fPROFCoincdenceRecord;
+    TFCoincidenceRecord       fTFCoincidenceRecord;
+    PROFCoincidenceRecord     fPROFCoincdenceRecord;
+    CombinedCoincidenceRecord fCombinedCoincidenceRecord;
     std::map<std::string,unsigned int> fXBTFDetNameToIndex;
+    std::map<unsigned int,std::string> fXBTFIndexToDetName;
 
     double getCoordinate(unsigned int const &cDet,   unsigned int const &cFibre);
     double getCosTheta  (unsigned int const &cPROF1, unsigned int const &cPROF2, unsigned int const &cPROF4);
     double getMomentum  (double const &cCosTheta, double const &cCurrent);
-    double getMass      (double const &cMomentum, double const &cPathLength, double const &cTimeOfFlight);
     void   considerMomenta(std::vector<unsigned int> const &cPROF1Fibs, std::vector<unsigned int> const &cPROF2Fibs, std::vector<unsigned int> const &cPROF3Fibs, double const &cCurrent,
                            std::vector<double> &cCosTheta, std::vector<double> &cTheta, std::vector<double> &cMomentum);
 
     //NANOSECONDS.
-    double    toleranceTF   = 1000.;
-    long long tolerancePROF = 9000000;
+    double    toleranceTF   = 100.;
+    long long tolerancePROF = 100.;
     
     //GEOMETRY.
     //RADIANS, METERS FOR OFFSETS, MM FOR FIBRE COORDS (CORRECTED IN THE GET FUNCTION).

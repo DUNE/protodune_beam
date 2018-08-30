@@ -132,18 +132,61 @@ class PROFCoincidenceRecord{
 class CombinedCoincidenceRecord{
   public:
     class TFPROFCoincidence{
-      TFPROFCoincidence(){};
-    
-    };
-    class TOFPROFCoincidence{
-      TOFPROFCoincidence(){};
-    
+      public:
+        //UNTIL WE KNOW THAT THE PATH LENGTH IS DEFINITELY FIXED, LEAVE THE FLEXIBILITY IN THERE.
+        TFCoincidenceRecord::TFCoincidence fTFCo;
+        std::vector<PROFCoincidenceRecord::PROFCoincidence> fPROFCos;
+        std::vector<std::vector<double>> fMass;
+
+        TFPROFCoincidence(TFCoincidenceRecord::TFCoincidence cTFCo, std::vector<PROFCoincidenceRecord::PROFCoincidence> cPROFCos){fTFCo = cTFCo; fPROFCos = cPROFCos; return;};
+        unsigned int getMultiplicity()
+        {
+          return fPROFCos.size();
+        }
+        std::vector<PROFCoincidenceRecord::PROFCoincidence> getPROFCoincidences()
+        {
+          return fPROFCos;
+        }
+        TFCoincidenceRecord::TFCoincidence getTFCoincidence()
+        {
+          return fTFCo;
+        }
+        void addPROFCoincidence(PROFCoincidenceRecord::PROFCoincidence cPROFCoincidence)
+        {
+          fPROFCos.push_back(cPROFCoincidence);
+          std::vector<double> tempMass;
+          for(unsigned int i = 0; i < cPROFCoincidence.getNFibreCombinations(); i++)
+          {
+            tempMass.push_back(calculateMass(cPROFCoincidence.getMomentum()[i], 32.000, fTFCo.fTF));  
+          }
+          fMass.push_back(tempMass);
+        }
+
+      private:
+        double calculateMass(double const &cMomentum, double const &cPathLength, double const &cTimeOfFlight)
+        {
+          double a    = 299792458*cTimeOfFlight/cPathLength;
+          double mass = (a*a - 1 >= 0 ? (cMomentum/299792458)*std::sqrt(a*a-1) : -1.);
+
+          return mass;
+        }
     };
     CombinedCoincidenceRecord(){return;};
-    std::vector<TFPROFCoincidence>  fTFPROFCoincidenceDegenerate;
-    std::vector<TFPROFCoincidence>  fTFPROFCoincidenceUnique;
-    std::vector<TOFPROFCoincidence> fTOFPROFCoincidenceDegenerate;
-    std::vector<TOFPROFCoincidence> fTOFPROFCoincidenceUnique;
+    std::vector<TFPROFCoincidence> getTFPROFCoincidencesDegenerate();
+    std::vector<TFPROFCoincidence> getTFPROFCoincidencesUnique();
+    unsigned int getMultiplicity(PROFCoincidenceRecord::PROFCoincidence const &cPROFCoincidence); //RETURNS THE MULTIPLICITY OF A PARTICULAR PROF COMBINATION ACROSS ALL OF THE TF COINCIDENCES.
+    void addTFPROFCoincidence(TFPROFCoincidence cTFPROFCoincidence);
+    void addMultiplicityInfo(std::array<unsigned int,6> &cPROFCoincidenceIncides);
+    void dumpDegenerate (std::map<std::string,Detector> &cMapDetectors, std::map<std::string,unsigned int> &cXBTFNameToIndex, TString const &cFilePathName, TFCoincidenceRecord &cTFCoincidenceRecord);
+    void dumpUnique     (std::map<std::string,Detector> &cMapDetectors, std::map<std::string,unsigned int> &cXBTFNameToIndex, TString const &cFilePathName, TFCoincidenceRecord &cTFCoincidenceRecord);
+    void printDegenerate(std::map<std::string,Detector> &cMapDetectors, std::map<std::string,unsigned int> &cXBTFNameToIndex, TFCoincidenceRecord &cTFCoincidenceRecord);
+    void printUnique    (std::map<std::string,Detector> &cMapDetectors, std::map<std::string,unsigned int> &cXBTFNameToIndex, TFCoincidenceRecord &cTFCoincidenceRecord);
+
+  private:
+    std::vector<TFPROFCoincidence>  fTFPROFCoincidencesDegenerate;
+    std::vector<TFPROFCoincidence>  fTFPROFCoincidencesUnique;
+    std::map<std::array<unsigned int,6>,unsigned int> fMapPROFCount;
+
 };
 
 #endif
