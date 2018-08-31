@@ -12,7 +12,7 @@
 int main(int argc, char *argv[])
 {
   gROOT->ProcessLine("#include <vector>");
-  std::string s_OutDir = "~/public/BeamLineMonitoring/DIPExtraction/SubscriptionLists/";
+  std::string s_OutDir = "/nfs/sw/BeamLineMonitoring/DIPExtraction/SubscriptionLists/";
 
   bool zeroSuppress = argv[1];
   std::vector<std::string> vec_DataPath;
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     BeamLine beamline;
     //FINDS AND FILLS THE TF COINCIDENCE RECORD VARIABLE IN OUR INSTANCE OF BEAMLINE.
     std::cout << "\nFINDING COINCIDENCES IN TF" << std::endl;
-    beamline.findTFCoincidences  (map_Detector);
+    //beamline.findTFCoincidences  (map_Detector);
     //FINDS AND FILLS THE PROF COINCIDENCE RECORD VARIABLE IN OUR INSTANCE OF BEAMLINE.
     std::cout << "\nFINDING COINCIDENCES IN PROF" << std::endl;
     beamline.findPROFCoincidences(map_Detector);

@@ -66,6 +66,7 @@ void unpackDIPROOT(std::map<std::string,Detector> &cMapDetector, std::string con
         if(br_TTS_MSB->at(j)>0.)
         {
           nNonZeroCount++;
+          acq.setEmpty(false);
         }
       }
       acq.setNNonZeroEvents(nNonZeroCount);
