@@ -12,7 +12,7 @@
 int main(int argc, char *argv[])
 {
   gROOT->ProcessLine("#include <vector>");
-  std::string s_OutDir = "/nfs/sw/BeamLineMonitoring/DIPExtraction/SubscriptionLists/";
+  std::string s_OutDir = "/nfs/sw/BeamLineMonitoring/AnaScripts/";
 
   bool zeroSuppress = argv[1];
   std::vector<std::string> vec_DataPath;

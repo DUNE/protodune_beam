@@ -52,7 +52,7 @@ void plot_AcqLevel(std::map<std::string,Detector> &map_Detector, std::map<std::s
     if(it_Detector.second.getType()=="XBPF")
     {
       TH1I *h_NEventsPerAcq = new TH1I("h_NEventsPerAcq_"+(TString)it_Detector.second.getDetName(),"h_NEventsPerAcq_"+(TString)it_Detector.second.getDetName(), 3001, -0.5, 3000.5);
-      TH1I *h_FracBuffer    = new TH1I("h_FracBuffer_"   +(TString)it_Detector.second.getDetName(),"h_FracBuffer_"   +(TString)it_Detector.second.getDetName(), 11,  -0.05,   1.05);
+      TH1I *h_FracBuffer    = new TH1I("h_FracBuffer_"   +(TString)it_Detector.second.getDetName(),"h_FracBuffer_"   +(TString)it_Detector.second.getDetName(), 50,  -0.05,   1.05);
 
       SetHistTitles(h_NEventsPerAcq, (TString)it_Detector.second.getDetName(), "Number of Events / Acqusition",         "Acquisitions");
       SetHistTitles(h_FracBuffer,    (TString)it_Detector.second.getDetName(), "Fraction of EventsData Array Filled",   "Acquisitions");
@@ -70,7 +70,7 @@ void plot_AcqLevel(std::map<std::string,Detector> &map_Detector, std::map<std::s
     else if(it_Detector.second.getType()=="XBTF")
     {
       TH1I *h_NEventsPerAcq = new TH1I("h_NEventsPerAcq_"+(TString)it_Detector.second.getDetName(),"h_NEventsPerAcq_"+(TString)it_Detector.second.getDetName(), 30001, -0.5, 30000.5);
-      TH1I *h_FracBuffer    = new TH1I("h_FracBuffer_"   +(TString)it_Detector.second.getDetName(),"h_FracBuffer_"   +(TString)it_Detector.second.getDetName(), 11,  -0.05,   1.05);
+      TH1I *h_FracBuffer    = new TH1I("h_FracBuffer_"   +(TString)it_Detector.second.getDetName(),"h_FracBuffer_"   +(TString)it_Detector.second.getDetName(), 50,    -0.05,   1.05);
 
       SetHistTitles(h_NEventsPerAcq, (TString)it_Detector.second.getDetName(), "Number of Events / Acqusition",         "Acquisitions");
       SetHistTitles(h_FracBuffer,    (TString)it_Detector.second.getDetName(), "Fraction of EventsData Array Filled",   "Acquisitions");

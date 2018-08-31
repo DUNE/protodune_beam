@@ -18,17 +18,19 @@ elif [ $1 = "-d" ]; then
   echo "RUNNING DEFAULT"
   lifetime=86400
   exec $HOME/DIPExtraction/dipClient.exe $DATAHOME/Trees_DIPRaw `cat $HOME/DIPExtraction/SubscriptionLists/detectorSubscriptions` &
+  sleep 30
 else
   lifetime=$(($1 * 60))
   exec $HOME/DIPExtraction/dipClient.exe -t $1 -f $2 $DATAHOME/Trees_DIPRaw `cat $3` &
+  sleep 30
 fi
 
 timestamp=$(date +%s)
 
-#while [ `date +%s` -lt $((timestamp+lifetime)) ]
-#do
-#  source $HOME/RunScripts/run_AnaScript_BIBL_ToHist.sh &
-#  sleep 60
-#done
+while [ `date +%s` -lt $((timestamp+lifetime)) ]
+do
+  source $HOME/RunScripts/run_AnaScript_BIBL_ToHist.sh &
+  sleep 60
+done
 
 echo "ANALYSIS SCRIPT FINISHED"

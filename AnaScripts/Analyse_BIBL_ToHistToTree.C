@@ -155,6 +155,9 @@ int main(int argc, char *argv[])
     latestFile.open(s_OutDir+"latestHistFile.txt");
     latestFile << s_OutDir+"Analyse_BIBL_Hist_"+s_FirstTime+"_"+s_LastTime+".root" << std::endl;
     latestFile.close();
+    latestFile.open(s_OutDir+"filesList_ForLXPlus.txt",std::ios_base::app);
+    latestFile << s_OutDir+"Analyse_BIBL_Hist_"+s_FirstTime+"_"+s_LastTime+".root" << std::endl;
+    latestFile.close();
 
     std::cout << "\nHISTOGRAMS AND TREES DONE!\n" << std::endl;
   }

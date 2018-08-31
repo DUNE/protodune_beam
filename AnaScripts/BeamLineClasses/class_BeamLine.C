@@ -239,8 +239,8 @@ void BeamLine::findPROFCoincidences(std::map<std::string,Detector> &cMapDetector
           if(!(vec_CurrentRecordsPROF1[vec_DetAcqPROF1[i].getNNonZeroEvents()-1].fTriggerTimestamp-vec_CurrentRecordsPROF3[0].fTriggerTimestamp<-1*tolerancePROF))
           {
             unsigned int newStartValue = 0;
-            for(unsigned int k = 0; k < (vec_CurrentRecordsPROF1.size()<10 ? vec_CurrentRecordsPROF1.size() : 10); k++)
-            //for(unsigned int k = 0; k < vec_CurrentRecordsPROF1.size(); k++)
+            //for(unsigned int k = 0; k < (vec_CurrentRecordsPROF1.size()<10 ? vec_CurrentRecordsPROF1.size() : 10); k++)
+            for(unsigned int k = 0; k < vec_DetAcqPROF1[i].getNNonZeroEvents(); k++)
             {
               bool beenInRegion = false;
               std::cout.precision(25);
@@ -253,8 +253,8 @@ void BeamLine::findPROFCoincidences(std::map<std::string,Detector> &cMapDetector
               {
                 std::cout << "current us time is earlier than the latest downstream time" << std::endl;
                 //LOOP L OVER THE EVENTS IN ACQUISITION J FROM PROF3.
-                for(unsigned int l = newStartValue; l < (vec_CurrentRecordsPROF3.size()<10 ? vec_CurrentRecordsPROF3.size() : 10); l++)
-                //for(unsigned int l = newStartValue; l < vec_CurrentRecordsPROF3.size(); l++)
+                //for(unsigned int l = newStartValue; l < (vec_CurrentRecordsPROF3.size()<10 ? vec_CurrentRecordsPROF3.size() : 10); l++)
+                for(unsigned int l = newStartValue; l < vec_DetAcqPROF3[j].getNNonZeroEvents(); l++)
                 {
                   long long deltaT = vec_CurrentRecordsPROF1[k].fTriggerTimestamp-vec_CurrentRecordsPROF3[l].fTriggerTimestamp;
                   std::cout << " us acq: " << i << " us event: " << k << " us time: " << vec_CurrentRecordsPROF1[k].fTriggerTimestamp 
@@ -284,7 +284,7 @@ void BeamLine::findPROFCoincidences(std::map<std::string,Detector> &cMapDetector
                         {
                           std::cout << "latest mid time after current us and earliest mid time before ds" << std::endl;
                           //LOOP N OVER THE MIDDLE PROFILER'S EVENTS IN ACQUISITION M.
-                          for(unsigned int n = 0; n < vec_CurrentRecordsPROF2.size(); n++)
+                          for(unsigned int n = 0; n < vec_DetAcqPROF2[m].getNNonZeroEvents(); n++)
                           {
                             std::cout << "mid acq: " << m << " mid event: " << n <<  "us time " << vec_CurrentRecordsPROF1[k].fTriggerTimestamp  
                                       << " ms time " << vec_CurrentRecordsPROF2[n].fTriggerTimestamp 
