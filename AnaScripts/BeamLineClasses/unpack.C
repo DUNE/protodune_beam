@@ -9,6 +9,7 @@ void unpackDIPROOT(std::map<std::string,Detector> &cMapDetector, std::string con
   std::string *br_DetName      = 0;
   std::string *br_DetType      = 0;
   double       br_Timestamp;
+  double       br_Current;
   int          br_CountsRec;
   int          br_TimestampCount;
   std::vector<unsigned long> *br_TTS_LSB = 0;
@@ -29,6 +30,7 @@ void unpackDIPROOT(std::map<std::string,Detector> &cMapDetector, std::string con
   t->SetBranchAddress("detName",        &br_DetName       );
   t->SetBranchAddress("detType",        &br_DetType       );
   t->SetBranchAddress("timestamp",      &br_Timestamp     );
+  t->SetBranchAddress("current",        &br_Current       );
   t->SetBranchAddress("countsRec",      &br_CountsRec     );
   t->SetBranchAddress("timestampCount", &br_TimestampCount);
   t->SetBranchAddress("TTS_LSB", &br_TTS_LSB);
@@ -70,6 +72,7 @@ void unpackDIPROOT(std::map<std::string,Detector> &cMapDetector, std::string con
         }
       }
       acq.setNNonZeroEvents(nNonZeroCount);
+      acq.setCurrent(br_Current);
       cMapDetector[*br_DetName].addAcquisition(acq);
     }
     else if(*br_DetType=="XBTF" && cMapDetector.count(*br_DetName)>0)
