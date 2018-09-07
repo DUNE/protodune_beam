@@ -35,9 +35,14 @@ double BeamLine::getCosTheta(unsigned int const &cPROF1, unsigned const &cPROF2,
   double XPROF3    = getCoordinate(3, cPROF3);
 
   double a        = (XPROF2*Offset_XBPF022702-XPROF3*Offset_XBPF022701)/(Offset_XBPF022702-Offset_XBPF022701); 
-  double cosTheta = ((a-XPROF1)*(XPROF3-XPROF2)*CosTheta0 - (Offset_XBPF022702-Offset_XBPF022701)*(Offset_XBPF022697+(a-XPROF1)*TanTheta0))/
+  /*double cosTheta = ((a-XPROF1)*(XPROF3-XPROF2)*CosTheta0 - (Offset_XBPF022702-Offset_XBPF022701)*(Offset_XBPF022697+(a-XPROF1)*TanTheta0))/
                     (std::sqrt(Offset_XBPF022697*Offset_XBPF022697+(a-XPROF1)*(a-XPROF1))*std::sqrt((Offset_XBPF022702-Offset_XBPF022701)*(Offset_XBPF022702-Offset_XBPF022701)
-                   +((Offset_XBPF022702-Offset_XBPF022701)*TanTheta0-(XPROF3-XPROF2)*CosTheta0*((Offset_XBPF022702-Offset_XBPF022701)*TanTheta0-(XPROF3-XPROF2)*CosTheta0))));
+                   +((Offset_XBPF022702-Offset_XBPF022701)*TanTheta0-(XPROF3-XPROF2)*CosTheta0*((Offset_XBPF022702-Offset_XBPF022701)*TanTheta0-(XPROF3-XPROF2)*CosTheta0))));*/
+  double num  = ((a-XPROF1)*(XPROF2-XPROF3)*CosTheta0 - (Offset_XBPF022702-Offset_XBPF022701)*(Offset_XBPF022697+(a-XPROF1)*TanTheta0));
+  double den1 = std::sqrt(Offset_XBPF022697*Offset_XBPF022697+(a-XPROF1)*(a-XPROF1));
+  double den2 = std::sqrt(((Offset_XBPF022701-Offset_XBPF022702)*std::tan(Theta0)+(XPROF2-XPROF3)*std::cos(Theta0))*((Offset_XBPF022701-Offset_XBPF022702)*std::tan(Theta0)+(XPROF2-XPROF3)*std::cos(Theta0))
+                          +(Offset_XBPF022701-Offset_XBPF022702)*(Offset_XBPF022701-Offset_XBPF022702));
+  double cosTheta = std::cos(Pi - std::acos(num/(den1*den2)));
 
   return cosTheta;
 }
@@ -51,7 +56,7 @@ double BeamLine::getMomentum(double const &cCosTheta, double const &cCurrent)
     LB+= mag_P3*deltaI*deltaI;
   }
 
-  return (299792458*L_B*LB/(1.e9*std::acos(cCosTheta))); 
+  return (299792458*LB/(1.e9*(std::acos(cCosTheta)))); 
 }
 
 void BeamLine::considerMomenta(std::vector<unsigned int> const &cPROF1Fibs, std::vector<unsigned int> const &cPROF2Fibs, std::vector<unsigned int> const &cPROF3Fibs, double const &cCurrent,
@@ -149,7 +154,7 @@ void BeamLine::findTFCoincidences(std::map<std::string,Detector> &cMapDetectors)
                 {
                   unsigned int newStartValue = 0;
                   //LOOP OVER THE EVENTS IN US ACQUISITION K.
-                  for(unsigned int m = 0; m < (vec_CurrentRecordsUS.size() < 30 ? vec_CurrentRecordsUS.size() : 30); m++)
+                  for(unsigned int m = 0; m < (vec_CurrentRecordsUS.size() < 100 ? vec_CurrentRecordsUS.size() : 100); m++)
                   //for(unsigned int m = 0; m < vec_CurrentRecordsUS.size(); m++)
                   {
                     bool beenInRegion = false;
@@ -157,7 +162,7 @@ void BeamLine::findTFCoincidences(std::map<std::string,Detector> &cMapDetectors)
                                  +(vec_CurrentRecordsUS[m].fSubSeconds-vec_CurrentRecordsDS[vec_CurrentRecordsDS.size()-1].fSubSeconds)/1.e9)*1.e9>0))
                     {
                       //LOOP OVER THE EVENTS IN DS ACQUISITION L.
-                      for(unsigned int n = newStartValue; n < (vec_CurrentRecordsDS.size() < 30 ? vec_CurrentRecordsDS.size() : 30); n++)
+                      for(unsigned int n = newStartValue; n < (vec_CurrentRecordsDS.size() < 100 ? vec_CurrentRecordsDS.size() : 100); n++)
                       //for(unsigned int n = newStartValue; n < vec_CurrentRecordsDS.size(); n++)
                       {
                         double deltaT = (((double)vec_CurrentRecordsUS[m].fSeconds   -(double)vec_CurrentRecordsDS[n].fSeconds)
@@ -239,35 +244,24 @@ void BeamLine::findPROFCoincidences(std::map<std::string,Detector> &cMapDetector
           if(!(vec_CurrentRecordsPROF1[vec_DetAcqPROF1[i].getNNonZeroEvents()-1].fTriggerTimestamp-vec_CurrentRecordsPROF3[0].fTriggerTimestamp<-1*tolerancePROF))
           {
             unsigned int newStartValue = 0;
-            //for(unsigned int k = 0; k < (vec_CurrentRecordsPROF1.size()<10 ? vec_CurrentRecordsPROF1.size() : 10); k++)
-            for(unsigned int k = 0; k < vec_DetAcqPROF1[i].getNNonZeroEvents(); k++)
+            for(unsigned int k = 0; k < (vec_CurrentRecordsPROF1.size()<50 ? vec_CurrentRecordsPROF1.size() : 50); k++)
+            //for(unsigned int k = 0; k < vec_DetAcqPROF1[i].getNNonZeroEvents(); k++)
             {
               bool beenInRegion = false;
-              std::cout.precision(25);
-              std::cout << " \nus acq: " << i << " us event: " << k << " ds acq: " << j << std::endl;
-              std::cout << " us time: " << vec_CurrentRecordsPROF1[k].fTriggerTimestamp << " " << " latest ds: " << vec_CurrentRecordsPROF3[vec_DetAcqPROF3[j].getNNonZeroEvents()-1].fTriggerTimestamp
-                        << " diff: " << vec_CurrentRecordsPROF1[k].fTriggerTimestamp-vec_CurrentRecordsPROF3[vec_DetAcqPROF3[j].getNNonZeroEvents()-1].fTriggerTimestamp << std::endl;
-
               //IF THE CURRENT UPSTREAM TIME IS LATER THAN THE LATEST DOWNSTREAM TIME, DONT ACCEPT.
               if(!(vec_CurrentRecordsPROF1[k].fTriggerTimestamp-vec_CurrentRecordsPROF3[vec_DetAcqPROF3[j].getNNonZeroEvents()-1].fTriggerTimestamp>0)) 
               {
-                std::cout << "current us time is earlier than the latest downstream time" << std::endl;
                 //LOOP L OVER THE EVENTS IN ACQUISITION J FROM PROF3.
-                //for(unsigned int l = newStartValue; l < (vec_CurrentRecordsPROF3.size()<10 ? vec_CurrentRecordsPROF3.size() : 10); l++)
-                for(unsigned int l = newStartValue; l < vec_DetAcqPROF3[j].getNNonZeroEvents(); l++)
+                for(unsigned int l = newStartValue; l < (vec_CurrentRecordsPROF3.size()<50 ? vec_CurrentRecordsPROF3.size() : 50); l++)
+                //for(unsigned int l = newStartValue; l < vec_DetAcqPROF3[j].getNNonZeroEvents(); l++)
                 {
                   long long deltaT = vec_CurrentRecordsPROF1[k].fTriggerTimestamp-vec_CurrentRecordsPROF3[l].fTriggerTimestamp;
-                  std::cout << " us acq: " << i << " us event: " << k << " us time: " << vec_CurrentRecordsPROF1[k].fTriggerTimestamp 
-                            << " ds acq: " << j << " ds event: " << l << " ds time: " << vec_CurrentRecordsPROF3[l].fTriggerTimestamp 
-                            << " deltaT: " << deltaT << std::endl;
                   if(deltaT<-1.*tolerancePROF)
                   {
-                    std::cout << "the deltat was less than -1*tolerance, moving onto next us value" << std::endl;
                     break;  
                   }
                   else if(deltaT>=(-1*tolerancePROF) && deltaT<=0)
                   {
-                    std::cout << "deltat accepted, looking for a middle value." << std::endl;
                     //LOOP M OVER THE MIDDLE PROFILER'S ACQUISITIONS.
                     for(unsigned int m = 0; m < vec_DetAcqPROF2.size(); m++)
                     {
@@ -275,30 +269,19 @@ void BeamLine::findPROFCoincidences(std::map<std::string,Detector> &cMapDetector
                       if(vec_CurrentRecordsPROF2.size()!=0)
                       {
                         //IF THE LATEST MIDTIME IS EARLIER THAN THE CURRENT US TIME OR THE EARLIERST MIDTIME IS LATER THAN CURRENT DS TIME, DONT ACCEPT. 
-                        std::cout << "latest mid time " << vec_CurrentRecordsPROF2[vec_DetAcqPROF2[m].getNNonZeroEvents()-1].fTriggerTimestamp
-                                  << " us time " << vec_CurrentRecordsPROF1[k].fTriggerTimestamp 
-                                  << " earlest mid time " << vec_CurrentRecordsPROF2[0].fTriggerTimestamp 
-                                  << " ds time " << vec_CurrentRecordsPROF3[l].fTriggerTimestamp << std::endl;
                         if(vec_CurrentRecordsPROF2[vec_DetAcqPROF2[m].getNNonZeroEvents()-1].fTriggerTimestamp>=vec_CurrentRecordsPROF1[k].fTriggerTimestamp && 
                            vec_CurrentRecordsPROF2[0].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp)
                         {
-                          std::cout << "latest mid time after current us and earliest mid time before ds" << std::endl;
                           //LOOP N OVER THE MIDDLE PROFILER'S EVENTS IN ACQUISITION M.
                           for(unsigned int n = 0; n < vec_DetAcqPROF2[m].getNNonZeroEvents(); n++)
                           {
-                            std::cout << "mid acq: " << m << " mid event: " << n <<  "us time " << vec_CurrentRecordsPROF1[k].fTriggerTimestamp  
-                                      << " ms time " << vec_CurrentRecordsPROF2[n].fTriggerTimestamp 
-                                      << " us time " << vec_CurrentRecordsPROF3[l].fTriggerTimestamp
-                                      << std::endl;
                             if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp>vec_CurrentRecordsPROF3[l].fTriggerTimestamp)
                             {
-                              std::cout << "ms time after ds time, moving onto next mid acquisition" << std::endl;
                               break;
                             }
                             else if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp &&
                                 vec_CurrentRecordsPROF2[n].fTriggerTimestamp>=vec_CurrentRecordsPROF1[k].fTriggerTimestamp )
                             {
-                              std::cout << "accepted! looking at next ms time to see if it is another acceptence" << std::endl;
                               std::vector<double> cosTheta; std::vector<double> theta; std::vector<double> momentum;
                               considerMomenta(vec_CurrentRecordsPROF1[k].fFibresList, vec_CurrentRecordsPROF2[n].fFibresList, vec_CurrentRecordsPROF3[l].fFibresList, vec_DetAcqPROF1[i].getCurrent(),
                                               cosTheta, theta, momentum);
@@ -319,7 +302,6 @@ void BeamLine::findPROFCoincidences(std::map<std::string,Detector> &cMapDetector
                       {
                         newStartValue = l;
                       }
-                      std::cout << "been in region has been triggered, when the ds time falls out of tolerance, next us will be compared to " << newStartValue << " ds value first" << std::endl; 
                     }
                   }
                 }

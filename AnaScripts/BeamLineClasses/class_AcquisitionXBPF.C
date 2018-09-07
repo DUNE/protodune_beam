@@ -4,7 +4,7 @@ AcquisitionXBPF::AcquisitionXBPF()
 {
   fFirstTriggerTimestamp = 2.e9;
   fLastTriggerTimestamp  = 0.;
-  fCurrent = 70.;
+  fCurrent = 508.4;
 
   return;
 }

@@ -59,7 +59,7 @@ class BeamLine{
     double mag_P2 = 0.;
     double mag_P3 = -4.68880000e-6;
     double mag_P4 = 3.24573967e2;
-    double L_B    = 2.000;
+    double Pi     = 3.14159265;
     double Theta0 = 120.030e-3;
     double Offset_XBPF022697 = 1.961;
     //double Offset_XBPF022697 = 2.004;

@@ -67,14 +67,14 @@ int main(int argc, char *argv[])
     BeamLine beamline;
     //FINDS AND FILLS THE TF COINCIDENCE RECORD VARIABLE IN OUR INSTANCE OF BEAMLINE.
     std::cout << "\nDATA UNPACKED, FINDING COINCIDENCES IN TF" << std::endl;
-    beamline.findTFCoincidences  (map_Detector);
+    //beamline.findTFCoincidences  (map_Detector);
     //FINDS AND FILLS THE PROF COINCIDENCE RECORD VARIABLE IN OUR INSTANCE OF BEAMLINE.
     std::cout << "\nFINDING COINCIDENCES IN PROF" << std::endl;
     beamline.findPROFCoincidences(map_Detector);
 
     //beamline.printTFCoincidencesDegenerate(map_Detector);
     //beamline.printTFCoincidencesUnique(map_Detector);
-    //beamline.printPROFCoincidencesDegenerate(map_Detector);
+    beamline.printPROFCoincidencesDegenerate(map_Detector);
     //beamline.printPROFCoincidencesUnique(map_Detector);
 
     std::vector<PROFCoincidenceRecord::PROFCoincidence> vec_PROFCO_Degen = beamline.getPROFCoincidencesDegenerate();

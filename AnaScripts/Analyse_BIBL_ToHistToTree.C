@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
     //beamline.findTFCoincidences  (map_Detector);
     //FINDS AND FILLS THE PROF COINCIDENCE RECORD VARIABLE IN OUR INSTANCE OF BEAMLINE.
     std::cout << "\nFINDING COINCIDENCES IN PROF" << std::endl;
-    //beamline.findPROFCoincidences(map_Detector);
+    beamline.findPROFCoincidences(map_Detector);
 
     //beamline.printTFCoincidencesDegenerate(map_Detector);
     //beamline.printTFCoincidencesUnique(map_Detector);
@@ -112,8 +112,8 @@ int main(int argc, char *argv[])
     beamline.dumpBIData                    (map_Detector,(TString)s_OutDir+"Analyse_BIBL_Tree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
     //beamline.dumpTFCoincidencesDegenerate  (map_Detector,(TString)s_OutDir+"Analyse_BIBL_Tree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
     //beamline.dumpTFCoincidencesUnique      (map_Detector,(TString)s_OutDir+"Analyse_BIBL_Tree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
-    //beamline.dumpPROFCoincidencesDegenerate(map_Detector,(TString)s_OutDir+"Analyse_BIBL_Tree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
-    //beamline.dumpPROFCoincidencesUnique    (map_Detector,(TString)s_OutDir+"Analyse_BIBL_Tree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
+    beamline.dumpPROFCoincidencesDegenerate(map_Detector,(TString)s_OutDir+"Analyse_BIBL_Tree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
+    beamline.dumpPROFCoincidencesUnique    (map_Detector,(TString)s_OutDir+"Analyse_BIBL_Tree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
 
     TFile *f_Out = new TFile((TString)s_OutDir+"Analyse_BIBL_Hist_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root","RECREATE");
     for(auto detector : map_NameToVecHist_I)
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
     latestFile << s_OutDir+"Analyse_BIBL_Hist_"+s_FirstTime+"_"+s_LastTime+".root" << std::endl;
     latestFile.close();
     latestFile.open(s_OutDir+"lxplus_HistFiles.txt",std::ios_base::app);
-    latestFile << s_OutDir+"Analyse_BIBL_Hist_"+s_FirstTime+"_"+s_LastTime+".root" << std::endl;
+    latestFile << s_OutDir+"Analyse_BIBL_Hist_"+s_FirstTime+"_"+s_LastTime+".root ";
     latestFile.close();
 
     std::cout << "\nHISTOGRAMS AND TREES DONE!\n" << std::endl;

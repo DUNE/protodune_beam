@@ -1,5 +1,8 @@
 #include "class_DetectorCoincidences.h"
 
+double Pi       = 3.14159265;
+double radToDeg = 180./Pi;
+
 std::vector<TFCoincidenceRecord::TFCoincidence> TFCoincidenceRecord::getTFCoincidencesDegenerate()
 {
   if(fVecTFCoincidesUnique.size()==0)
@@ -424,7 +427,7 @@ void PROFCoincidenceRecord::printDegenerate(std::map<std::string,Detector> &cMap
     std::cout << "    NUMBER OF POSSIBLE FIBRE COMBINATIONS: " << currentPROFCO.fMomentum.size() << std::endl;
     for(unsigned int j = 0; j < currentPROFCO.getCosTheta().size(); j++)
     {
-      std::cout << "    COSTHETA: " << currentPROFCO.getCosTheta()[j] << ", THETA (DEGREES): " << currentPROFCO.getTheta()[j] << ", MOMENTUM (GeV): " << currentPROFCO.getMomentum()[j] << std::endl;
+      std::cout << "    COSTHETA: " << currentPROFCO.getCosTheta()[j] << ", THETA (DEGREES): " << currentPROFCO.getTheta()[j]*radToDeg << ", MOMENTUM (GeV): " << currentPROFCO.getMomentum()[j] << std::endl;
     }
     std::cout << "-------------------------------------------------------------------------" << std::endl;
   }
@@ -482,7 +485,7 @@ void PROFCoincidenceRecord::printUnique(std::map<std::string,Detector> &cMapDete
     std::cout << "    NUMBER OF POSSIBLE FIBRE COMBINATIONS: " << currentPROFCO.getNFibreCombinations() << std::endl;
     for(unsigned int j = 0; j < currentPROFCO.getCosTheta().size(); j++)
     {
-      std::cout << "    COSTHETA: " << currentPROFCO.getCosTheta()[j] << ", THETA (DEGREES): " << currentPROFCO.getTheta()[j] << ", MOMENTUM (GeV): " << currentPROFCO.getMomentum()[j] << std::endl;
+      std::cout << "    COSTHETA: " << currentPROFCO.getCosTheta()[j] << ", THETA (DEGREES): " << currentPROFCO.getTheta()[j]*radToDeg << ", MOMENTUM (GeV): " << currentPROFCO.getMomentum()[j] << std::endl;
     }
     std::cout << "-------------------------------------------------------------------------" << std::endl;
   }
@@ -531,7 +534,7 @@ void PROFCoincidenceRecord::dumpDegenerate(std::map<std::string,Detector> &cMapD
   double       out_Current;                      //CURRENT OF THE BENDING MAGNET USED IN THE CALCULATION OF BFIELD, AMPS.
   bool         out_IsUnique;                     //FLAG AS TO WHEN THIS COINCIDENCE IS TIME UNIQUE.
   std::vector<double> out_CosTheta;              //CALCULATED COSTHETA.
-  std::vector<double> out_Theta;                 //CALCULATED THETA, DEGREES.
+  std::vector<double> out_Theta;                 //CALCULATED THETA, RADIANS.
   std::vector<double> out_Momentum;              //CALCULATED MOMENTUM, GeV.
 
   t_DumpTree->Branch("PROF1_AcqIndex",         &out_PROF1_AcqIndex);
@@ -650,7 +653,7 @@ void PROFCoincidenceRecord::dumpUnique(std::map<std::string,Detector> &cMapDetec
   bool         out_IsUnique;                     //CURRENT OF THE BENDING MAGNET USED IN THE CALCULATION OF BFIELD, AMPS.
   double       out_Current;                      //FLAG AS TO WHEN THIS COINCIDENCE IS TIME UNIQUE.
   std::vector<double> out_CosTheta;              //CALCULATED COSTHETA.
-  std::vector<double> out_Theta;                 //CALCULATED THETA, DEGREES.
+  std::vector<double> out_Theta;                 //CALCULATED THETA, RADIANS.
   std::vector<double> out_Momentum;              //CALCULATED MOMENTUM, GeV.
 
   t_DumpTree->Branch("PROF1_AcqIndex",         &out_PROF1_AcqIndex);
@@ -835,7 +838,7 @@ void CombinedCoincidenceRecord::dumpDegenerate(std::map<std::string,Detector> &c
   std::vector<bool>         out_IsPROFUnique;                 //CURRENT OF THE BENDING MAGNET USED IN THE CALCULATION OF BFIELD, AMPS.
   std::vector<double>       out_Current;                      //FLAG AS TO WHEN THIS COINCIDENCE IS TIME UNIQUE.
   std::vector<std::vector<double>> out_CosTheta;              //CALCULATED COSTHETA.
-  std::vector<std::vector<double>> out_Theta;                 //CALCULATED THETA, DEGREES.
+  std::vector<std::vector<double>> out_Theta;                 //CALCULATED THETA, RADIANS.
   std::vector<std::vector<double>> out_Momentum;              //CALCULATED MOMENTUM, GeV.
   std::vector<std::vector<double>> out_Mass;                  //CALCULATED MASS.
 
@@ -1040,7 +1043,7 @@ void CombinedCoincidenceRecord::dumpUnique(std::map<std::string,Detector> &cMapD
   std::vector<bool>         out_IsPROFUnique;                 //CURRENT OF THE BENDING MAGNET USED IN THE CALCULATION OF BFIELD, AMPS.
   std::vector<double>       out_Current;                      //FLAG AS TO WHEN THIS COINCIDENCE IS TIME UNIQUE.
   std::vector<std::vector<double>> out_CosTheta;              //CALCULATED COSTHETA.
-  std::vector<std::vector<double>> out_Theta;                 //CALCULATED THETA, DEGREES.
+  std::vector<std::vector<double>> out_Theta;                 //CALCULATED THETA, RADIANS.
   std::vector<std::vector<double>> out_Momentum;              //CALCULATED MOMENTUM, GeV.
   std::vector<std::vector<double>> out_Mass;                  //CALCULATED MASS.
 
@@ -1258,7 +1261,7 @@ void CombinedCoincidenceRecord::printDegenerate(std::map<std::string,Detector> &
       std::cout << "    NUMBER OF POSSIBLE FIBRE COMBINATIONS: " << currentPROFCO.getNFibreCombinations() << std::endl;
       for(unsigned int k = 0; k < currentPROFCO.getCosTheta().size(); k++)
       {
-        std::cout << "    COSTHETA: " << currentPROFCO.getCosTheta()[k] << ", THETA (DEGREES): " << currentPROFCO.getTheta()[k] << ", MOMENTUM (GeV): " << currentPROFCO.getMomentum()[k] << std::endl;
+        std::cout << "    COSTHETA: " << currentPROFCO.getCosTheta()[k] << ", THETA (DEGREES): " << currentPROFCO.getTheta()[k]*radToDeg << ", MOMENTUM (GeV): " << currentPROFCO.getMomentum()[k] << std::endl;
         std::cout << "    MASS (GeV): " << fTFPROFCoincidencesDegenerate[i].fMass[j][k] << std::endl; 
       }
       std::cout << "-------------------------------------------------------------------------" << std::endl;
@@ -1345,7 +1348,7 @@ void CombinedCoincidenceRecord::printUnique(std::map<std::string,Detector> &cMap
       std::cout << "    NUMBER OF POSSIBLE FIBRE COMBINATIONS: " << currentPROFCO.getNFibreCombinations() << std::endl;
       for(unsigned int k = 0; k < currentPROFCO.getCosTheta().size(); k++)
       {
-        std::cout << "    COSTHETA: " << currentPROFCO.getCosTheta()[k] << ", THETA (DEGREES): " << currentPROFCO.getTheta()[k] << ", MOMENTUM (GeV): " << currentPROFCO.getMomentum()[k] << std::endl;
+        std::cout << "    COSTHETA: " << currentPROFCO.getCosTheta()[k] << ", THETA (DEGREES): " << currentPROFCO.getTheta()[k]*radToDeg << ", MOMENTUM (GeV): " << currentPROFCO.getMomentum()[k] << std::endl;
         std::cout << "    MASS (GeV): " << fTFPROFCoincidencesUnique[i].fMass[j][k] << std::endl; 
       }
       std::cout << "-------------------------------------------------------------------------" << std::endl;

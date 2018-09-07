@@ -71,9 +71,9 @@ int main(int argc, char *argv[])
     std::cout << "\nFINDING COINCIDENCES IN PROF" << std::endl;
     beamline.findPROFCoincidences(map_Detector);
 
-    //beamline.printTFCoincidencesDegenerate(map_Detector);
+    beamline.printTFCoincidencesDegenerate(map_Detector);
     //beamline.printTFCoincidencesUnique(map_Detector);
-    //beamline.printPROFCoincidencesDegenerate(map_Detector);
+    beamline.printPROFCoincidencesDegenerate(map_Detector);
     //beamline.printPROFCoincidencesUnique(map_Detector);
 
     std::string s_FirstFile = vec_DataPath.at(0);
