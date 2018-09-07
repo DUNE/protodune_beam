@@ -386,7 +386,7 @@ int main(const int argc, const char ** argv)
   std::string s_Usage = "./dipClient.exe [-t <LIFETIME, (MINS)>: 2 HOURS] [-f <FILE CLOSE INTERVAL, (SECS)>: 1 SECOND] <OUTDIR> <SUBSCRIPTION VARS>";
 
   //MEASURED IN SECONDS.
-  unsigned int lifetime          = 1440*60;
+  unsigned int lifetime          = 1438*60;
   unsigned int fileCloseInterval = 1;
 
   int i = 0;

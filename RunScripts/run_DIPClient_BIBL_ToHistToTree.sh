@@ -16,7 +16,7 @@ if [ $1 = "-h" ]; then
 #THERE IS NO NEED TO PROVIDE -f AND -t ARGUMENTS, DO REQUIRE AND OUTPUT DIR AND A LIST OF VARIABLES TO QUERY IN A SIMPLE TEXT FILE.
 elif [ $1 = "-d" ]; then
   echo "RUNNING DEFAULT"
-  lifetime=86400
+  lifetime=86280
   exec $HOME/DIPExtraction/dipClient.exe $DATAHOME/Trees_DIPRaw `cat $HOME/DIPExtraction/SubscriptionLists/detectorSubscriptions` &
   sleep 30
 else
