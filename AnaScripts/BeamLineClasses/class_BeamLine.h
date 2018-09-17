@@ -50,7 +50,7 @@ class BeamLine{
                            std::vector<double> &cCosTheta, std::vector<double> &cTheta, std::vector<double> &cMomentum);
 
     //NANOSECONDS.
-    double    toleranceTF   = 100.;
+    double    toleranceTF   = 500.;
     long long tolerancePROF = 100.;
     
     //GEOMETRY.
@@ -81,7 +81,8 @@ class BeamLine{
        72.5,  73.5,  74.5,  75.5,  76.5,  77.5,  78.5,  79.5,  80.5,  81.5,  82.5,  83.5,
        84.5,  85.5,  86.5,  87.5,  88.5,  89.5,  90.5,  91.5,  92.5,  93.5,  94.5, 95.5};
 
-    double Offset_XBPF022701 = 1.726;
+    //double Offset_XBPF022701 = 1.726;
+    double Offset_XBPF022701 = 1.71358;
     //double Offset_XBPF022701 = 1.718;
     std::vector<double> FibreToCoord_XBPF022701 = {
       -95.5, -94.5, -93.5, -92.5, -91.5, -90.5, -89.5, -88.5, -87.5, -86.5, -85.5, -84.5, 
@@ -101,7 +102,8 @@ class BeamLine{
        72.5,  73.5,  74.5,  75.5,  76.5,  77.5,  78.5,  79.5,  80.5,  81.5,  82.5,  83.5,
        84.5,  85.5,  86.5,  87.5,  88.5,  89.5,  90.5,  91.5,  92.5,  93.5,  94.5, 95.5};
 
-    double Offset_XBPF022702 = 2.189;
+    //double Offset_XBPF022702 = 2.189;
+    double Offset_XBPF022702 = 2.17325;
     //double Offset_XBPF022702 = 2.728;
     std::vector<double> FibreToCoord_XBPF022702 = {
       -95.5, -94.5, -93.5, -92.5, -91.5, -90.5, -89.5, -88.5, -87.5, -86.5, -85.5, -84.5, 

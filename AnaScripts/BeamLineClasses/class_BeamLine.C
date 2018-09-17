@@ -12,15 +12,15 @@ double BeamLine::getCoordinate(unsigned int const &cDet, unsigned int const &cFi
 {
   if(cDet==1)
   {
-    return FibreToCoord_XBPF022697[cFibre]*1e-3;
+    return -1.*FibreToCoord_XBPF022697[cFibre]*1e-3;
   }
   else if(cDet==2)
   {
-    return FibreToCoord_XBPF022701[cFibre]*1e-3;
+    return -1.*FibreToCoord_XBPF022701[cFibre]*1e-3;
   }
   else if(cDet==3)
   {
-    return FibreToCoord_XBPF022702[cFibre]*1e-3;
+    return -1.*FibreToCoord_XBPF022702[cFibre]*1e-3;
   }
 
   return 0.;
@@ -34,15 +34,23 @@ double BeamLine::getCosTheta(unsigned int const &cPROF1, unsigned const &cPROF2,
   double XPROF2    = getCoordinate(2, cPROF2);
   double XPROF3    = getCoordinate(3, cPROF3);
 
-  double a        = (XPROF2*Offset_XBPF022702-XPROF3*Offset_XBPF022701)/(Offset_XBPF022702-Offset_XBPF022701); 
+  //double a        = (XPROF2*Offset_XBPF022702-XPROF3*Offset_XBPF022701)/(Offset_XBPF022702-Offset_XBPF022701); 
   /*double cosTheta = ((a-XPROF1)*(XPROF3-XPROF2)*CosTheta0 - (Offset_XBPF022702-Offset_XBPF022701)*(Offset_XBPF022697+(a-XPROF1)*TanTheta0))/
                     (std::sqrt(Offset_XBPF022697*Offset_XBPF022697+(a-XPROF1)*(a-XPROF1))*std::sqrt((Offset_XBPF022702-Offset_XBPF022701)*(Offset_XBPF022702-Offset_XBPF022701)
                    +((Offset_XBPF022702-Offset_XBPF022701)*TanTheta0-(XPROF3-XPROF2)*CosTheta0*((Offset_XBPF022702-Offset_XBPF022701)*TanTheta0-(XPROF3-XPROF2)*CosTheta0))));*/
+  /*
   double num  = ((a-XPROF1)*(XPROF2-XPROF3)*CosTheta0 - (Offset_XBPF022702-Offset_XBPF022701)*(Offset_XBPF022697+(a-XPROF1)*TanTheta0));
   double den1 = std::sqrt(Offset_XBPF022697*Offset_XBPF022697+(a-XPROF1)*(a-XPROF1));
   double den2 = std::sqrt(((Offset_XBPF022701-Offset_XBPF022702)*std::tan(Theta0)+(XPROF2-XPROF3)*std::cos(Theta0))*((Offset_XBPF022701-Offset_XBPF022702)*std::tan(Theta0)+(XPROF2-XPROF3)*std::cos(Theta0))
                           +(Offset_XBPF022701-Offset_XBPF022702)*(Offset_XBPF022701-Offset_XBPF022702));
-  double cosTheta = std::cos(Pi - std::acos(num/(den1*den2)));
+  double cosTheta = std::cos(Pi - std::acos(num/(den1*den2)));*/
+
+  double a    = (XPROF2*Offset_XBPF022702-XPROF3*Offset_XBPF022701)/(Offset_XBPF022702-Offset_XBPF022701); 
+  double num  = ((a-XPROF1)*(XPROF3-XPROF2)*CosTheta0 - (Offset_XBPF022701-Offset_XBPF022702)*(Offset_XBPF022697+(a-XPROF1)*TanTheta0));
+  double den1 = std::sqrt(Offset_XBPF022697*Offset_XBPF022697+(a-XPROF1)*(a-XPROF1));
+  double den2 = std::sqrt(((Offset_XBPF022701-Offset_XBPF022702)*std::tan(Theta0)-(XPROF3-XPROF2)*std::cos(Theta0))*((Offset_XBPF022701-Offset_XBPF022702)*std::tan(Theta0)+(XPROF3-XPROF2)*std::cos(Theta0))
+                          +(Offset_XBPF022701-Offset_XBPF022702)*(Offset_XBPF022701-Offset_XBPF022702));
+  double cosTheta = num/(den1*den2);
 
   return cosTheta;
 }
@@ -120,6 +128,7 @@ void BeamLine::findTFCoincidences(std::map<std::string,Detector> &cMapDetectors)
   {
     for(unsigned int j = 0; j < vec_TFDet.size(); j++)
     {
+      std::cout << fXBTFIndexToDetName[i] << std::endl;
       //ONLY COMPARE ONE US AND DS PAIR ONCE.
       //if(i < j)
       if((fXBTFIndexToDetName[i]=="XBTF022687A" && fXBTFIndexToDetName[j]=="XBTF022716A")||
@@ -154,16 +163,16 @@ void BeamLine::findTFCoincidences(std::map<std::string,Detector> &cMapDetectors)
                 {
                   unsigned int newStartValue = 0;
                   //LOOP OVER THE EVENTS IN US ACQUISITION K.
-                  for(unsigned int m = 0; m < (vec_CurrentRecordsUS.size() < 100 ? vec_CurrentRecordsUS.size() : 100); m++)
-                  //for(unsigned int m = 0; m < vec_CurrentRecordsUS.size(); m++)
+                  //for(unsigned int m = 0; m < (vec_CurrentRecordsUS.size() < 100 ? vec_CurrentRecordsUS.size() : 100); m++)
+                  for(unsigned int m = 0; m < vec_CurrentRecordsUS.size(); m++)
                   {
                     bool beenInRegion = false;
                     if(!((((double)vec_CurrentRecordsUS[m].fSeconds   -(double)vec_CurrentRecordsDS[vec_CurrentRecordsDS.size()-1].fSeconds)
                                  +(vec_CurrentRecordsUS[m].fSubSeconds-vec_CurrentRecordsDS[vec_CurrentRecordsDS.size()-1].fSubSeconds)/1.e9)*1.e9>0))
                     {
                       //LOOP OVER THE EVENTS IN DS ACQUISITION L.
-                      for(unsigned int n = newStartValue; n < (vec_CurrentRecordsDS.size() < 100 ? vec_CurrentRecordsDS.size() : 100); n++)
-                      //for(unsigned int n = newStartValue; n < vec_CurrentRecordsDS.size(); n++)
+                      //for(unsigned int n = newStartValue; n < (vec_CurrentRecordsDS.size() < 100 ? vec_CurrentRecordsDS.size() : 100); n++)
+                      for(unsigned int n = newStartValue; n < vec_CurrentRecordsDS.size(); n++)
                       {
                         double deltaT = (((double)vec_CurrentRecordsUS[m].fSeconds   -(double)vec_CurrentRecordsDS[n].fSeconds)
                                                 +(vec_CurrentRecordsUS[m].fSubSeconds-vec_CurrentRecordsDS[n].fSubSeconds)/1.e9)*1.e9;
@@ -244,7 +253,7 @@ void BeamLine::findPROFCoincidences(std::map<std::string,Detector> &cMapDetector
           if(!(vec_CurrentRecordsPROF1[vec_DetAcqPROF1[i].getNNonZeroEvents()-1].fTriggerTimestamp-vec_CurrentRecordsPROF3[0].fTriggerTimestamp<-1*tolerancePROF))
           {
             unsigned int newStartValue = 0;
-            for(unsigned int k = 0; k < (vec_CurrentRecordsPROF1.size()<50 ? vec_CurrentRecordsPROF1.size() : 50); k++)
+            for(unsigned int k = 0; k < (vec_DetAcqPROF1[i].getNNonZeroEvents()<50 ? vec_DetAcqPROF1[i].getNNonZeroEvents() : 50); k++)
             //for(unsigned int k = 0; k < vec_DetAcqPROF1[i].getNNonZeroEvents(); k++)
             {
               bool beenInRegion = false;
@@ -252,10 +261,12 @@ void BeamLine::findPROFCoincidences(std::map<std::string,Detector> &cMapDetector
               if(!(vec_CurrentRecordsPROF1[k].fTriggerTimestamp-vec_CurrentRecordsPROF3[vec_DetAcqPROF3[j].getNNonZeroEvents()-1].fTriggerTimestamp>0)) 
               {
                 //LOOP L OVER THE EVENTS IN ACQUISITION J FROM PROF3.
-                for(unsigned int l = newStartValue; l < (vec_CurrentRecordsPROF3.size()<50 ? vec_CurrentRecordsPROF3.size() : 50); l++)
+                for(unsigned int l = newStartValue; l < (vec_DetAcqPROF1[j].getNNonZeroEvents()<50 ? vec_DetAcqPROF1[j].getNNonZeroEvents() : 50); l++)
                 //for(unsigned int l = newStartValue; l < vec_DetAcqPROF3[j].getNNonZeroEvents(); l++)
                 {
-                  long long deltaT = vec_CurrentRecordsPROF1[k].fTriggerTimestamp-vec_CurrentRecordsPROF3[l].fTriggerTimestamp;
+                  //long long deltaT = vec_CurrentRecordsPROF1[k].fTriggerTimestamp-vec_CurrentRecordsPROF3[l].fTriggerTimestamp;
+                  long long deltaT = vec_CurrentRecordsPROF1[k].fTriggerTimestamp-(vec_CurrentRecordsPROF3[l].fTriggerTimestamp+40);
+                  //long long deltaT = vec_CurrentRecordsPROF1[k].fTriggerTimestamp-vec_CurrentRecordsPROF3[l].fTriggerTimestamp;
                   if(deltaT<-1.*tolerancePROF)
                   {
                     break;  
@@ -270,16 +281,19 @@ void BeamLine::findPROFCoincidences(std::map<std::string,Detector> &cMapDetector
                       {
                         //IF THE LATEST MIDTIME IS EARLIER THAN THE CURRENT US TIME OR THE EARLIERST MIDTIME IS LATER THAN CURRENT DS TIME, DONT ACCEPT. 
                         if(vec_CurrentRecordsPROF2[vec_DetAcqPROF2[m].getNNonZeroEvents()-1].fTriggerTimestamp>=vec_CurrentRecordsPROF1[k].fTriggerTimestamp && 
-                           vec_CurrentRecordsPROF2[0].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp)
+                           //vec_CurrentRecordsPROF2[0].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp)
+                           vec_CurrentRecordsPROF2[0].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp+40)
                         {
                           //LOOP N OVER THE MIDDLE PROFILER'S EVENTS IN ACQUISITION M.
                           for(unsigned int n = 0; n < vec_DetAcqPROF2[m].getNNonZeroEvents(); n++)
                           {
-                            if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp>vec_CurrentRecordsPROF3[l].fTriggerTimestamp)
+                            if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp>vec_CurrentRecordsPROF3[l].fTriggerTimestamp+40)
+                            //if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp>vec_CurrentRecordsPROF3[l].fTriggerTimestamp)
                             {
                               break;
                             }
-                            else if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp &&
+                            else if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp+40 &&
+                            //else if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp &&
                                 vec_CurrentRecordsPROF2[n].fTriggerTimestamp>=vec_CurrentRecordsPROF1[k].fTriggerTimestamp )
                             {
                               std::vector<double> cosTheta; std::vector<double> theta; std::vector<double> momentum;

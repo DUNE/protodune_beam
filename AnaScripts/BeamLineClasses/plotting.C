@@ -241,9 +241,9 @@ void plot_EventLevel(std::map<std::string,Detector> &map_Detector, std::map<std:
 
 void plotPROF(std::vector<PROFCoincidenceRecord::PROFCoincidence> &vec_PROFCO, std::vector<TH1D*> &vec_PROFHist1D, std::vector<TH2D*> &vec_PROFHist2D, TString const &sType) 
 {
-  TH1D *h_CosTheta   = new TH1D("h_CosTheta_"  +sType, "h_CosTheta_"  +sType,  50, -1.1,  1.1);
-  TH1D *h_Momentum   = new TH1D("h_Momentum_"  +sType, "h_Momentum_"  +sType,  50,    2,   12);
-  TH1D *h_Theta      = new TH1D("h_Theta_"     +sType, "h_Theta_"     +sType,  50,    0,   12);
+  TH1D *h_CosTheta   = new TH1D("h_CosTheta_"  +sType, "h_CosTheta_"  +sType, 100, -1.1,  1.1);
+  TH1D *h_Momentum   = new TH1D("h_Momentum_"  +sType, "h_Momentum_"  +sType, 100,    0,   12);
+  TH1D *h_Theta      = new TH1D("h_Theta_"     +sType, "h_Theta_"     +sType, 100,    0,   12);
   TH1D *h_FibComb    = new TH1D("h_FibComb_"   +sType, "h_FibComb_"   +sType,  21, -0.5, 20.5);
   TH1D *h_MultiPROF1 = new TH1D("h_MultiPROF1_"+sType, "h_MultiPROF1_"+sType,   7, -0.5,  6.5);
   TH1D *h_MultiPROF2 = new TH1D("h_MultiPROF2_"+sType, "h_MultiPROF2_"+sType,   7, -0.5,  6.5);
@@ -274,14 +274,30 @@ void plotPROF(std::vector<PROFCoincidenceRecord::PROFCoincidence> &vec_PROFCO, s
   {
     for(unsigned int j = 0; j < vec_PROFCO[i].getMomentum().size(); j++)
     {
-      h_CosTheta->Fill(vec_PROFCO[i].getCosTheta()[j]);  
-      h_Momentum->Fill(vec_PROFCO[i].getMomentum()[j]);  
-      h_Theta   ->Fill(vec_PROFCO[i].getTheta()[j]*180./3.141593);
+      if(sType=="UNIQ")
+      {
+        if(vec_PROFCO[i].getMomentum().size()==1)
+        {
+          h_CosTheta->Fill(vec_PROFCO[i].getCosTheta()[j]);  
+          h_Momentum->Fill(vec_PROFCO[i].getMomentum()[j]);  
+          h_Theta   ->Fill(vec_PROFCO[i].getTheta()[j]*180./3.141593);
+          h_FibComb   ->Fill((vec_PROFCO[i].getNFibreCombinations()<=19 ? vec_PROFCO[i].getNFibreCombinations() : 20));
+          h_MultiPROF1->Fill((vec_PROFCO[i].fMultiplicity[0]<=5 ? vec_PROFCO[i].fMultiplicity[0] : 6));
+          h_MultiPROF2->Fill((vec_PROFCO[i].fMultiplicity[1]<=5 ? vec_PROFCO[i].fMultiplicity[1] : 6));
+          h_MultiPROF3->Fill((vec_PROFCO[i].fMultiplicity[2]<=5 ? vec_PROFCO[i].fMultiplicity[2] : 6));
+        }
+      }
+      else
+      {
+        h_CosTheta->Fill(vec_PROFCO[i].getCosTheta()[j]);  
+        h_Momentum->Fill(vec_PROFCO[i].getMomentum()[j]);  
+        h_Theta   ->Fill(vec_PROFCO[i].getTheta()[j]*180./3.141593);
+        h_FibComb   ->Fill((vec_PROFCO[i].getNFibreCombinations()<=19 ? vec_PROFCO[i].getNFibreCombinations() : 20));
+        h_MultiPROF1->Fill((vec_PROFCO[i].fMultiplicity[0]<=5 ? vec_PROFCO[i].fMultiplicity[0] : 6));
+        h_MultiPROF2->Fill((vec_PROFCO[i].fMultiplicity[1]<=5 ? vec_PROFCO[i].fMultiplicity[1] : 6));
+        h_MultiPROF3->Fill((vec_PROFCO[i].fMultiplicity[2]<=5 ? vec_PROFCO[i].fMultiplicity[2] : 6));
+      }
     }
-    h_FibComb   ->Fill((vec_PROFCO[i].getNFibreCombinations()<=19 ? vec_PROFCO[i].getNFibreCombinations() : 20));
-    h_MultiPROF1->Fill((vec_PROFCO[i].fMultiplicity[0]<=5 ? vec_PROFCO[i].fMultiplicity[0] : 6));
-    h_MultiPROF2->Fill((vec_PROFCO[i].fMultiplicity[1]<=5 ? vec_PROFCO[i].fMultiplicity[1] : 6));
-    h_MultiPROF3->Fill((vec_PROFCO[i].fMultiplicity[2]<=5 ? vec_PROFCO[i].fMultiplicity[2] : 6));
   }
 
   vec_PROFHist1D.push_back(h_CosTheta  );
@@ -297,19 +313,22 @@ void plotPROF(std::vector<PROFCoincidenceRecord::PROFCoincidence> &vec_PROFCO, s
 
 void plotTF(std::vector<TFCoincidenceRecord::TFCoincidence> &vec_TFCO, std::vector<TH1D*> &vec_TFHist1D, std::vector<TH2D*> &vec_TFHist2D, TString const &sType) 
 {
-  TH1D *h_TF      = new TH1D("h_TF_"     +sType,"h_TF_"      +sType, 50,    0,  500);
-  TH1D *h_MultiUS = new TH1D("h_MultiUS_"+sType, "h_MultiUS_"+sType,  7, -0.5,  6.5); 
-  TH1D *h_MultiDS = new TH1D("h_MultiDS_"+sType, "h_MultiDS_"+sType,  7, -0.5,  6.5); 
+  TH1D *h_TF      = new TH1D("h_TF_"     +sType,"h_TF_"      +sType, 200,    0,  500);
+  TH1D *h_TF_ROI  = new TH1D("h_TF_ROI_" +sType,"h_TF_ROI_"  +sType, 134,  140,  140+134*0.3);
+  TH1D *h_MultiUS = new TH1D("h_MultiUS_"+sType, "h_MultiUS_"+sType,   7, -0.5,  6.5); 
+  TH1D *h_MultiDS = new TH1D("h_MultiDS_"+sType, "h_MultiDS_"+sType,   7, -0.5,  6.5); 
 
   if(sType=="UNIQ")
   {
     SetHistTitles(h_TF,      "Time of Flight from XBTFs, Unique Events", "Time, (ns)",   "Events");
+    SetHistTitles(h_TF_ROI,  "Time of Flight from XBTFs, Unique Events", "Time, (ns)",   "Events");
     SetHistTitles(h_MultiUS, "Event Coincidence Degeneracy, US",         "Combinations", "Events");
     SetHistTitles(h_MultiDS, "Event Coincidence Degeneracy, DS",         "Combinations", "Events");
   }
   else
   {
     SetHistTitles(h_TF,      "Time of Flight from XBTFs, Degenerate Events", "Time, (ns)",   "Events");
+    SetHistTitles(h_TF_ROI,  "Time of Flight from XBTFs, Degenerate Events", "Time, (ns)",   "Events");
     SetHistTitles(h_MultiUS, "Event Coincidence Degeneracy, US",             "Combinations", "Events");
     SetHistTitles(h_MultiDS, "Event Coincidence Degeneracy, DS",             "Combinations", "Events");
   }
@@ -317,11 +336,13 @@ void plotTF(std::vector<TFCoincidenceRecord::TFCoincidence> &vec_TFCO, std::vect
   for(unsigned int i = 0; i < vec_TFCO.size(); i++)
   {
     h_TF->Fill(vec_TFCO[i].fTF);
+    h_TF_ROI->Fill(vec_TFCO[i].fTF);
     h_MultiUS->Fill((vec_TFCO[i].fMultiplicity.first <=5 ? vec_TFCO[i].fMultiplicity.first  : 6));
     h_MultiDS->Fill((vec_TFCO[i].fMultiplicity.second<=5 ? vec_TFCO[i].fMultiplicity.second : 6));
   }
 
   vec_TFHist1D.push_back(h_TF);
+  vec_TFHist1D.push_back(h_TF_ROI);
   vec_TFHist1D.push_back(h_MultiUS);
   vec_TFHist1D.push_back(h_MultiDS);
 

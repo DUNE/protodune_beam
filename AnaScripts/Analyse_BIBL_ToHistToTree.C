@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
     BeamLine beamline;
     //FINDS AND FILLS THE TF COINCIDENCE RECORD VARIABLE IN OUR INSTANCE OF BEAMLINE.
     std::cout << "\nSINGLE DETECTOR PLOTS DONE, FINDING COINCIDENCES IN TF" << std::endl;
-    //beamline.findTFCoincidences  (map_Detector);
+    beamline.findTFCoincidences  (map_Detector);
     //FINDS AND FILLS THE PROF COINCIDENCE RECORD VARIABLE IN OUR INSTANCE OF BEAMLINE.
     std::cout << "\nFINDING COINCIDENCES IN PROF" << std::endl;
     beamline.findPROFCoincidences(map_Detector);
@@ -110,8 +110,8 @@ int main(int argc, char *argv[])
     std::string s_LastTime  = s_LastFile .substr(s_LastFile .length()-15,10);
 
     beamline.dumpBIData                    (map_Detector,(TString)s_OutDir+"Analyse_BIBL_Tree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
-    //beamline.dumpTFCoincidencesDegenerate  (map_Detector,(TString)s_OutDir+"Analyse_BIBL_Tree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
-    //beamline.dumpTFCoincidencesUnique      (map_Detector,(TString)s_OutDir+"Analyse_BIBL_Tree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
+    beamline.dumpTFCoincidencesDegenerate  (map_Detector,(TString)s_OutDir+"Analyse_BIBL_Tree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
+    beamline.dumpTFCoincidencesUnique      (map_Detector,(TString)s_OutDir+"Analyse_BIBL_Tree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
     beamline.dumpPROFCoincidencesDegenerate(map_Detector,(TString)s_OutDir+"Analyse_BIBL_Tree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
     beamline.dumpPROFCoincidencesUnique    (map_Detector,(TString)s_OutDir+"Analyse_BIBL_Tree_"+(TString)s_FirstTime+"_"+(TString)s_LastTime+".root");
 
