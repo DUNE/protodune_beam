@@ -46,12 +46,16 @@ int main(int argc, char *argv[])
       {
         s_DetType = "XBTF"; 
       }
+      else if(s_DetName[0]=='S')
+      {
+        s_DetType = "XBTF";
+      }
       else
       {
         s_DetType = s_DetName.substr(0,4);
       }
 
-      Detector detector(s_DetName, s_DetType, (s_DetName[0]=='G' ? "XBH4_"+s_DetType+"_"+s_DetName : "XBH4_"+s_DetType+"_022_"+s_DetName.substr(7)));
+      Detector detector(s_DetName, s_DetType, ((s_DetName[0]=='G' || s_DetName[0]=='S') ? "XBH4_"+s_DetType+"_"+s_DetName : "XBH4_"+s_DetType+"_022_"+s_DetName.substr(7)));
       map_Detector[s_DetName] = detector;
       detector.printDescription();
     }

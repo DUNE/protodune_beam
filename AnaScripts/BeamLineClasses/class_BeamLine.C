@@ -34,21 +34,10 @@ double BeamLine::getCosTheta(unsigned int const &cPROF1, unsigned const &cPROF2,
   double XPROF2    = getCoordinate(2, cPROF2);
   double XPROF3    = getCoordinate(3, cPROF3);
 
-  //double a        = (XPROF2*Offset_XBPF022702-XPROF3*Offset_XBPF022701)/(Offset_XBPF022702-Offset_XBPF022701); 
-  /*double cosTheta = ((a-XPROF1)*(XPROF3-XPROF2)*CosTheta0 - (Offset_XBPF022702-Offset_XBPF022701)*(Offset_XBPF022697+(a-XPROF1)*TanTheta0))/
-                    (std::sqrt(Offset_XBPF022697*Offset_XBPF022697+(a-XPROF1)*(a-XPROF1))*std::sqrt((Offset_XBPF022702-Offset_XBPF022701)*(Offset_XBPF022702-Offset_XBPF022701)
-                   +((Offset_XBPF022702-Offset_XBPF022701)*TanTheta0-(XPROF3-XPROF2)*CosTheta0*((Offset_XBPF022702-Offset_XBPF022701)*TanTheta0-(XPROF3-XPROF2)*CosTheta0))));*/
-  /*
-  double num  = ((a-XPROF1)*(XPROF2-XPROF3)*CosTheta0 - (Offset_XBPF022702-Offset_XBPF022701)*(Offset_XBPF022697+(a-XPROF1)*TanTheta0));
-  double den1 = std::sqrt(Offset_XBPF022697*Offset_XBPF022697+(a-XPROF1)*(a-XPROF1));
-  double den2 = std::sqrt(((Offset_XBPF022701-Offset_XBPF022702)*std::tan(Theta0)+(XPROF2-XPROF3)*std::cos(Theta0))*((Offset_XBPF022701-Offset_XBPF022702)*std::tan(Theta0)+(XPROF2-XPROF3)*std::cos(Theta0))
-                          +(Offset_XBPF022701-Offset_XBPF022702)*(Offset_XBPF022701-Offset_XBPF022702));
-  double cosTheta = std::cos(Pi - std::acos(num/(den1*den2)));*/
-
   double a    = (XPROF2*Offset_XBPF022702-XPROF3*Offset_XBPF022701)/(Offset_XBPF022702-Offset_XBPF022701); 
   double num  = ((a-XPROF1)*(XPROF3-XPROF2)*CosTheta0 - (Offset_XBPF022701-Offset_XBPF022702)*(Offset_XBPF022697+(a-XPROF1)*TanTheta0));
   double den1 = std::sqrt(Offset_XBPF022697*Offset_XBPF022697+(a-XPROF1)*(a-XPROF1));
-  double den2 = std::sqrt(((Offset_XBPF022701-Offset_XBPF022702)*std::tan(Theta0)-(XPROF3-XPROF2)*std::cos(Theta0))*((Offset_XBPF022701-Offset_XBPF022702)*std::tan(Theta0)+(XPROF3-XPROF2)*std::cos(Theta0))
+  double den2 = std::sqrt(((Offset_XBPF022701-Offset_XBPF022702)*std::tan(Theta0)-(XPROF3-XPROF2)*std::cos(Theta0))*((Offset_XBPF022701-Offset_XBPF022702)*std::tan(Theta0)-(XPROF3-XPROF2)*std::cos(Theta0))
                           +(Offset_XBPF022701-Offset_XBPF022702)*(Offset_XBPF022701-Offset_XBPF022702));
   double cosTheta = num/(den1*den2);
 
@@ -253,7 +242,7 @@ void BeamLine::findPROFCoincidences(std::map<std::string,Detector> &cMapDetector
           if(!(vec_CurrentRecordsPROF1[vec_DetAcqPROF1[i].getNNonZeroEvents()-1].fTriggerTimestamp-vec_CurrentRecordsPROF3[0].fTriggerTimestamp<-1*tolerancePROF))
           {
             unsigned int newStartValue = 0;
-            for(unsigned int k = 0; k < (vec_DetAcqPROF1[i].getNNonZeroEvents()<50 ? vec_DetAcqPROF1[i].getNNonZeroEvents() : 50); k++)
+            for(unsigned int k = 0; k < (vec_DetAcqPROF1[i].getNNonZeroEvents()<500 ? vec_DetAcqPROF1[i].getNNonZeroEvents() : 500); k++)
             //for(unsigned int k = 0; k < vec_DetAcqPROF1[i].getNNonZeroEvents(); k++)
             {
               bool beenInRegion = false;
@@ -261,41 +250,54 @@ void BeamLine::findPROFCoincidences(std::map<std::string,Detector> &cMapDetector
               if(!(vec_CurrentRecordsPROF1[k].fTriggerTimestamp-vec_CurrentRecordsPROF3[vec_DetAcqPROF3[j].getNNonZeroEvents()-1].fTriggerTimestamp>0)) 
               {
                 //LOOP L OVER THE EVENTS IN ACQUISITION J FROM PROF3.
-                for(unsigned int l = newStartValue; l < (vec_DetAcqPROF1[j].getNNonZeroEvents()<50 ? vec_DetAcqPROF1[j].getNNonZeroEvents() : 50); l++)
+                for(unsigned int l = newStartValue; l < (vec_DetAcqPROF1[j].getNNonZeroEvents()<500 ? vec_DetAcqPROF1[j].getNNonZeroEvents() : 500); l++)
                 //for(unsigned int l = newStartValue; l < vec_DetAcqPROF3[j].getNNonZeroEvents(); l++)
                 {
-                  //long long deltaT = vec_CurrentRecordsPROF1[k].fTriggerTimestamp-vec_CurrentRecordsPROF3[l].fTriggerTimestamp;
-                  long long deltaT = vec_CurrentRecordsPROF1[k].fTriggerTimestamp-(vec_CurrentRecordsPROF3[l].fTriggerTimestamp+40);
-                  //long long deltaT = vec_CurrentRecordsPROF1[k].fTriggerTimestamp-vec_CurrentRecordsPROF3[l].fTriggerTimestamp;
+                  long long deltaT = vec_CurrentRecordsPROF1[k].fTriggerTimestamp-vec_CurrentRecordsPROF3[l].fTriggerTimestamp;
+                  //long long deltaT = vec_CurrentRecordsPROF1[k].fTriggerTimestamp-(vec_CurrentRecordsPROF3[l].fTriggerTimestamp+40);
                   if(deltaT<-1.*tolerancePROF)
                   {
                     break;  
                   }
-                  else if(deltaT>=(-1*tolerancePROF) && deltaT<=0)
+                  //else if(deltaT>=(-1*tolerancePROF) && deltaT<=0)
+                  else if(std::abs(deltaT)<=tolerancePROF)
                   {
                     //LOOP M OVER THE MIDDLE PROFILER'S ACQUISITIONS.
                     for(unsigned int m = 0; m < vec_DetAcqPROF2.size(); m++)
                     {
                       std::vector<AcquisitionXBPF::EventRecordHR> vec_CurrentRecordsPROF2 = vec_DetAcqPROF2[m].getDataHR(); 
+                      unsigned int newStartValue2 = 0;
+                      bool         beenInRegion2  = false;
                       if(vec_CurrentRecordsPROF2.size()!=0)
                       {
                         //IF THE LATEST MIDTIME IS EARLIER THAN THE CURRENT US TIME OR THE EARLIERST MIDTIME IS LATER THAN CURRENT DS TIME, DONT ACCEPT. 
                         if(vec_CurrentRecordsPROF2[vec_DetAcqPROF2[m].getNNonZeroEvents()-1].fTriggerTimestamp>=vec_CurrentRecordsPROF1[k].fTriggerTimestamp && 
-                           //vec_CurrentRecordsPROF2[0].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp)
-                           vec_CurrentRecordsPROF2[0].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp+40)
+                           vec_CurrentRecordsPROF2[0].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp)
+                           //vec_CurrentRecordsPROF2[0].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp+40)
                         {
                           //LOOP N OVER THE MIDDLE PROFILER'S EVENTS IN ACQUISITION M.
-                          for(unsigned int n = 0; n < vec_DetAcqPROF2[m].getNNonZeroEvents(); n++)
+                          for(unsigned int n = newStartValue2; n < vec_DetAcqPROF2[m].getNNonZeroEvents(); n++)
                           {
-                            if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp>vec_CurrentRecordsPROF3[l].fTriggerTimestamp+40)
+                            //if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp>vec_CurrentRecordsPROF3[l].fTriggerTimestamp+40)
                             //if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp>vec_CurrentRecordsPROF3[l].fTriggerTimestamp)
+                            if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp-vec_CurrentRecordsPROF3[l].fTriggerTimestamp>tolerancePROF)
                             {
                               break;
                             }
-                            else if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp+40 &&
+                            else if(std::abs(vec_CurrentRecordsPROF2[n].fTriggerTimestamp-vec_CurrentRecordsPROF3[l].fTriggerTimestamp)<=tolerancePROF &&
+                                    std::abs(vec_CurrentRecordsPROF2[n].fTriggerTimestamp-vec_CurrentRecordsPROF1[k].fTriggerTimestamp)<=tolerancePROF )
+                            //else if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp+40 &&
                             //else if(vec_CurrentRecordsPROF2[n].fTriggerTimestamp<=vec_CurrentRecordsPROF3[l].fTriggerTimestamp &&
-                                vec_CurrentRecordsPROF2[n].fTriggerTimestamp>=vec_CurrentRecordsPROF1[k].fTriggerTimestamp )
+                              //  vec_CurrentRecordsPROF2[n].fTriggerTimestamp>=vec_CurrentRecordsPROF1[k].fTriggerTimestamp )
                             {
+                              if(beenInRegion2==false)
+                              {
+                                beenInRegion2 = true;
+                                if(n>0)
+                                {
+                                  newStartValue2 = n - 1;
+                                }
+                              }
                               std::vector<double> cosTheta; std::vector<double> theta; std::vector<double> momentum;
                               considerMomenta(vec_CurrentRecordsPROF1[k].fFibresList, vec_CurrentRecordsPROF2[n].fFibresList, vec_CurrentRecordsPROF3[l].fFibresList, vec_DetAcqPROF1[i].getCurrent(),
                                               cosTheta, theta, momentum);
