@@ -119,10 +119,12 @@ void TFCoincidenceRecord::printUnique(std::map<std::string,Detector> &cMapDetect
     }
   }
 
+  std::cout.precision(25);
   std::cout << "**************************************************************************" << std::endl;
   std::cout << "PRINTING UNIQUE XBTF COINCIDENCES" << std::endl;
 
-  for(unsigned int i = 0; i < fVecTFCoincidesUnique.size(); i++)
+  //for(unsigned int i = 0; i < fVecTFCoincidesUnique.size(); i++)
+  for(unsigned int i = 0; i < 10; i++)
   {
     TFCoincidence currentTFCO = fVecTFCoincidesUnique[i];
     AcquisitionXBTF::EventRecordHR ER_US = vec_DetAcq[currentTFCO.fDetUS][currentTFCO.fAcqUS].getDataHR()[currentTFCO.fEventUS];
@@ -453,7 +455,8 @@ void PROFCoincidenceRecord::printUnique(std::map<std::string,Detector> &cMapDete
   std::cout << "**************************************************************************" << std::endl;
   std::cout << "PRINTING UNIQUE PROF COINCIDENCES" << std::endl;
 
-  for(unsigned int i = 0; i < fVecPROFCoincidesUnique.size(); i++)
+  for(unsigned int i = 0; i < 10; i++)
+  //for(unsigned int i = 0; i < fVecPROFCoincidesUnique.size(); i++)
   {
     PROFCoincidence currentPROFCO = fVecPROFCoincidesUnique[i];
     AcquisitionXBPF::EventRecordHR ER_PROF1 = vec_DetAcqPROF1[currentPROFCO.fAcqPROF1].getDataHR()[currentPROFCO.fEventPROF1];
@@ -1298,7 +1301,8 @@ void CombinedCoincidenceRecord::printUnique(std::map<std::string,Detector> &cMap
   std::cout << "**************************************************************************" << std::endl;
   std::cout << "PRINTING DEGENERATE TF PROF COINCIDENCES" << std::endl;
 
-  for(unsigned int i = 0; i < fTFPROFCoincidencesUnique.size(); i++)
+  for(unsigned int i = 0; i < 10; i++)
+  //for(unsigned int i = 0; i < fTFPROFCoincidencesUnique.size(); i++)
   {
     TFCoincidenceRecord::TFCoincidence currentTFCO = fTFPROFCoincidencesUnique[i].getTFCoincidence();
     std::vector<PROFCoincidenceRecord::PROFCoincidence> currentPROFCOs = fTFPROFCoincidencesDegenerate[i].getPROFCoincidences();

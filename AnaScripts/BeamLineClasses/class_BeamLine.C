@@ -34,11 +34,17 @@ double BeamLine::getCosTheta(unsigned int const &cPROF1, unsigned const &cPROF2,
   double XPROF2    = getCoordinate(2, cPROF2);
   double XPROF3    = getCoordinate(3, cPROF3);
 
-  double a    = (XPROF2*Offset_XBPF022702-XPROF3*Offset_XBPF022701)/(Offset_XBPF022702-Offset_XBPF022701); 
+  /*double a    = (XPROF2*Offset_XBPF022702-XPROF3*Offset_XBPF022701)/(Offset_XBPF022702-Offset_XBPF022701); 
   double num  = ((a-XPROF1)*(XPROF3-XPROF2)*CosTheta0 - (Offset_XBPF022701-Offset_XBPF022702)*(Offset_XBPF022697+(a-XPROF1)*TanTheta0));
   double den1 = std::sqrt(Offset_XBPF022697*Offset_XBPF022697+(a-XPROF1)*(a-XPROF1));
   double den2 = std::sqrt(((Offset_XBPF022701-Offset_XBPF022702)*std::tan(Theta0)-(XPROF3-XPROF2)*std::cos(Theta0))*((Offset_XBPF022701-Offset_XBPF022702)*std::tan(Theta0)-(XPROF3-XPROF2)*std::cos(Theta0))
-                          +(Offset_XBPF022701-Offset_XBPF022702)*(Offset_XBPF022701-Offset_XBPF022702));
+                          +(Offset_XBPF022701-Offset_XBPF022702)*(Offset_XBPF022701-Offset_XBPF022702));*/
+  double a    = (XPROF3*Offset_XBPF022701-XPROF2*Offset_XBPF022702)*CosTheta0/(Offset_XBPF022702-Offset_XBPF022701); 
+  double num  = (a+XPROF1)*((Offset_XBPF022702-Offset_XBPF022701)*TanTheta0+(XPROF2-XPROF3)*CosTheta0)+Offset_XBPF022697*(Offset_XBPF022702-Offset_XBPF022701);
+  double den1 = std::sqrt(Offset_XBPF022697*Offset_XBPF022697+(a+XPROF1)*(a+XPROF1));
+  double den2 = std::sqrt(((Offset_XBPF022702-Offset_XBPF022701)*TanTheta0+(XPROF2-XPROF3)*CosTheta0)*((Offset_XBPF022702-Offset_XBPF022701)*TanTheta0+(XPROF2-XPROF3)*CosTheta0)+
+                           (Offset_XBPF022702-Offset_XBPF022701)*(Offset_XBPF022702-Offset_XBPF022701));
+
   double cosTheta = num/(den1*den2);
 
   return cosTheta;
@@ -532,6 +538,7 @@ void BeamLine::dumpTFPROFCoincidencesUnique(std::map<std::string,Detector> &cMap
 
 void BeamLine::findTFPROFCoincidences(std::map<std::string,Detector> &cMapDetectors, bool const &cUseUniqueCoincidencesOnly)
 {
+  std::cout << "in the function" << std::endl;
   std::vector<TFCoincidenceRecord::TFCoincidence>     vec_TFCo;  
   std::vector<PROFCoincidenceRecord::PROFCoincidence> vec_PROFCo;
 
@@ -550,6 +557,7 @@ void BeamLine::findTFPROFCoincidences(std::map<std::string,Detector> &cMapDetect
   cMapDetectors["XBPF022697"].getAcquisitions(vec_DetAcqPROF1);
   std::vector<AcquisitionXBPF> vec_DetAcqPROF3;
   cMapDetectors["XBPF022702"].getAcquisitions(vec_DetAcqPROF3);
+  std::cout << "acquisitions got" << std::endl;
 
   for(unsigned int i = 0; i < vec_TFCo.size(); i++)
   {
@@ -566,9 +574,13 @@ void BeamLine::findTFPROFCoincidences(std::map<std::string,Detector> &cMapDetect
       std::vector<PROFCoincidenceRecord::PROFCoincidence> vec_MatchedPROFCo;
       for(unsigned int j = 0; vec_PROFCo.size(); j++)
       {
+        std::cout <<"before teh if statement" << std::endl;
+        std::cout << i << " " << j << " " << vec_TFCo.size() << "  " << vec_PROFCo.size() << std::endl;
+        std::cout <<vec_DetAcqPROF1[vec_PROFCo[j].fAcqPROF1].getDataHR()[vec_PROFCo[j].fEventPROF1].fTriggerTimestamp-vec_AcqUS[vec_TFCo[i].fAcqUS].getDataHR()[vec_TFCo[i].fEventUS].fSeconds_FullTime*1e9 << std::endl;
         if((double)vec_DetAcqPROF1[vec_PROFCo[j].fAcqPROF1].getDataHR()[vec_PROFCo[j].fEventPROF1].fTriggerTimestamp>=vec_AcqUS[vec_TFCo[i].fAcqUS].getDataHR()[vec_TFCo[i].fEventUS].fSeconds_FullTime*1e9 &&
            (double)vec_DetAcqPROF1[vec_PROFCo[j].fAcqPROF3].getDataHR()[vec_PROFCo[j].fEventPROF3].fTriggerTimestamp<=vec_AcqDS[vec_TFCo[i].fAcqDS].getDataHR()[vec_TFCo[i].fEventDS].fSeconds_FullTime*1e9)
         {
+          std::cout <<"in teh if statement" << std::endl;
           vec_MatchedPROFCo.push_back(vec_PROFCo[j]);
           std::array<unsigned int,6> coincidenceIndices = {vec_PROFCo[j].fAcqPROF1, vec_PROFCo[j].fEventPROF1,
                                                            vec_PROFCo[j].fAcqPROF2, vec_PROFCo[j].fEventPROF2,

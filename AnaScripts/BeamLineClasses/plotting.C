@@ -255,9 +255,9 @@ void plotPROF(std::vector<PROFCoincidenceRecord::PROFCoincidence> &vec_PROFCO, s
     SetHistTitles(h_Momentum  , "Momentum, Unique Events",                              "Momentum, (GeV)",   "Events");
     SetHistTitles(h_Theta     , "Deflection Angle, Unique Events",                      "Deflection, (Deg)", "Events");
     SetHistTitles(h_FibComb   , "Number of Possible Fibre Combinations / Unique Event", "Combinations",      "Events");
-    SetHistTitles(h_MultiPROF1, "Event Coincidence Degeneracy", "Combinations","Events");
-    SetHistTitles(h_MultiPROF2, "Event Coincidence Degeneracy", "Combinations","Events");
-    SetHistTitles(h_MultiPROF3, "Event Coincidence Degeneracy", "Combinations","Events");
+    SetHistTitles(h_MultiPROF1, "Event Coincidence Degeneracy, XBPF022697", "Combinations","Events");
+    SetHistTitles(h_MultiPROF2, "Event Coincidence Degeneracy, XBPF022701", "Combinations","Events");
+    SetHistTitles(h_MultiPROF3, "Event Coincidence Degeneracy, XBPF022702", "Combinations","Events");
   }
   else
   {
@@ -265,9 +265,9 @@ void plotPROF(std::vector<PROFCoincidenceRecord::PROFCoincidence> &vec_PROFCO, s
     SetHistTitles(h_Momentum  , "Momentum, Degenerate Events",                              "Momentum, (GeV)",   "Events");
     SetHistTitles(h_Theta     , "Deflection Angle, Degenerate Events",                      "Deflection, (Deg)", "Events");
     SetHistTitles(h_FibComb   , "Number of Possible Fibre Combinations / Degenerate Event", "Combinations",      "Events");
-    SetHistTitles(h_MultiPROF1, "Event Coincidence Degeneracy", "Combinations","Events");
-    SetHistTitles(h_MultiPROF2, "Event Coincidence Degeneracy", "Combinations","Events");
-    SetHistTitles(h_MultiPROF3, "Event Coincidence Degeneracy", "Combinations","Events");
+    SetHistTitles(h_MultiPROF1, "Event Coincidence Degeneracy, XBPF022697", "Combinations","Events");
+    SetHistTitles(h_MultiPROF2, "Event Coincidence Degeneracy, XBPF022701", "Combinations","Events");
+    SetHistTitles(h_MultiPROF3, "Event Coincidence Degeneracy, XBPF022702", "Combinations","Events");
   }
 
   for(unsigned int i = 0; i < vec_PROFCO.size(); i++)

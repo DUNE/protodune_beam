@@ -46,12 +46,16 @@ int main(int argc, char *argv[])
       {
         s_DetType = "XBTF"; 
       }
+      else if(s_DetName[0]=='S')
+      {
+        s_DetType = "XBTF";
+      }
       else
       {
         s_DetType = s_DetName.substr(0,4);
       }
 
-      Detector detector(s_DetName, s_DetType, (s_DetName[0]=='G' ? "XBH4_"+s_DetType+"_"+s_DetName : "XBH4_"+s_DetType+"_022_"+s_DetName.substr(7)));
+      Detector detector(s_DetName, s_DetType, ((s_DetName[0]=='G' || s_DetName[0]=='S') ? "XBH4_"+s_DetType+"_"+s_DetName : "XBH4_"+s_DetType+"_022_"+s_DetName.substr(7)));
       map_Detector[s_DetName] = detector;
       detector.printDescription();
     }
@@ -77,14 +81,19 @@ int main(int argc, char *argv[])
     //FINDS AND FILLS THE TF COINCIDENCE RECORD VARIABLE IN OUR INSTANCE OF BEAMLINE.
     std::cout << "\nSINGLE DETECTOR PLOTS DONE, FINDING COINCIDENCES IN TF" << std::endl;
     beamline.findTFCoincidences  (map_Detector);
+    beamline.printTFCoincidencesUnique(map_Detector);
     //FINDS AND FILLS THE PROF COINCIDENCE RECORD VARIABLE IN OUR INSTANCE OF BEAMLINE.
     std::cout << "\nFINDING COINCIDENCES IN PROF" << std::endl;
     beamline.findPROFCoincidences(map_Detector);
+    beamline.printPROFCoincidencesUnique(map_Detector);
+    std::cout << "FINDING TF PROF COINCIDENCES" << std::endl;
+    beamline.findTFPROFCoincidences(map_Detector, true);
 
     //beamline.printTFCoincidencesDegenerate(map_Detector);
-    beamline.printTFCoincidencesUnique(map_Detector);
-    beamline.printPROFCoincidencesDegenerate(map_Detector);
+    //beamline.printTFCoincidencesUnique(map_Detector);
+    //beamline.printPROFCoincidencesDegenerate(map_Detector);
     //beamline.printPROFCoincidencesUnique(map_Detector);
+    beamline.printTFPROFCoincidencesUnique(map_Detector);
 
     std::vector<PROFCoincidenceRecord::PROFCoincidence> vec_PROFCO_Degen = beamline.getPROFCoincidencesDegenerate();
     std::vector<PROFCoincidenceRecord::PROFCoincidence> vec_PROFCO_Uniq  = beamline.getPROFCoincidencesUnique();
@@ -97,10 +106,10 @@ int main(int argc, char *argv[])
     std::vector<TH2D*> vec_TFHist2D;
 
     std::cout << "\nFINDING DONE, MAKING PLOTS" << std::endl;
-    plotPROF(vec_PROFCO_Degen, vec_PROFHist1D, vec_PROFHist2D, "DEGEN"); 
-    plotPROF(vec_PROFCO_Uniq,  vec_PROFHist1D, vec_PROFHist2D, "UNIQ" ); 
-    plotTF  (vec_TFCO_Degen,     vec_TFHist1D,   vec_TFHist2D, "DEGEN");
-    plotTF  (vec_TFCO_Uniq,      vec_TFHist1D,   vec_TFHist2D, "UNIQ" );
+    //plotPROF(vec_PROFCO_Degen, vec_PROFHist1D, vec_PROFHist2D, "DEGEN"); 
+    //plotPROF(vec_PROFCO_Uniq,  vec_PROFHist1D, vec_PROFHist2D, "UNIQ" ); 
+    //plotTF  (vec_TFCO_Degen,     vec_TFHist1D,   vec_TFHist2D, "DEGEN");
+    //plotTF  (vec_TFCO_Uniq,      vec_TFHist1D,   vec_TFHist2D, "UNIQ" );
 
     std::cout << "\nPLOTS MADE, DUMPING TO TREES" << std::endl;
 
