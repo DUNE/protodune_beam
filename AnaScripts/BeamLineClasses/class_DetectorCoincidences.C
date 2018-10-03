@@ -1,4 +1,5 @@
 #include "class_DetectorCoincidences.h"
+#include "TInterpreter.h"
 
 double Pi       = 3.14159265;
 double radToDeg = 180./Pi;
@@ -748,11 +749,14 @@ std::vector<CombinedCoincidenceRecord::TFPROFCoincidence> CombinedCoincidenceRec
 
 std::vector<CombinedCoincidenceRecord::TFPROFCoincidence> CombinedCoincidenceRecord::getTFPROFCoincidencesUnique()
 {
-  for(unsigned int i = 0; i < fTFPROFCoincidencesDegenerate.size(); i++)
+  if(fTFPROFCoincidencesUnique.size()==0)
   {
-    if(fTFPROFCoincidencesDegenerate[i].getMultiplicity()==1)
+    for(unsigned int i = 0; i < fTFPROFCoincidencesDegenerate.size(); i++)
     {
-      fTFPROFCoincidencesUnique.push_back(fTFPROFCoincidencesUnique[i]);
+      if(fTFPROFCoincidencesDegenerate[i].getMultiplicity()==1)
+      {
+        fTFPROFCoincidencesUnique.push_back(fTFPROFCoincidencesDegenerate[i]);
+      }
     }
   }
 
@@ -779,6 +783,8 @@ void CombinedCoincidenceRecord::addMultiplicityInfo(std::array<unsigned int,6> &
 void CombinedCoincidenceRecord::dumpDegenerate(std::map<std::string,Detector> &cMapDetectors, std::map<std::string,unsigned int> &cXBTFNameToIndex, TString const &cFilePathName,
                                                TFCoincidenceRecord &cTFCoincidenceRecord)
 {
+  gInterpreter->GenerateDictionary("vector<vector<UInt_t> >","vector");
+  
   if(fTFPROFCoincidencesUnique.size()==0)
   {
     getTFPROFCoincidencesUnique();  
@@ -824,7 +830,7 @@ void CombinedCoincidenceRecord::dumpDegenerate(std::map<std::string,Detector> &c
   std::vector<unsigned int> out_PROF1_Multiplicity;           //NUMBER OF TIMES THIS EXACT EVENT IS MATCHED WITH OTHER POSSIBLE PROF2 AND PROF3 TIMING COINCIDENCES.
   std::vector<long long>    out_PROF1_TriggerTimestamp;       //TRIGGER TIMESTAMP OF EVENT IN PROF1. NANOSECONDS.
   std::vector<unsigned int> out_PROF1_NFibresHit;             //NUMBER OF PROF1 FIBRES HIT IN THIS EVENT.
-  std::vector<std::vector<unsigned int>> out_PROF1_FibresHit; //LIST OF PROF2 FIBRES HIT IN THIS EVENT.
+  std::vector<std::vector<unsigned int>> out_PROF1_FibresHit; //LIST OF PROF1 FIBRES HIT IN THIS EVENT.
   std::vector<unsigned int> out_PROF2_AcqIndex;               //ACQUISITION INDEX OF PROF2.
   std::vector<unsigned int> out_PROF2_EventIndex;             //EVENT INDEX OF PROF2.
   std::vector<unsigned int> out_PROF2_Multiplicity;           //NUMBER OF TIMES THIS EXACT EVENT IS MATCHED WITH OTHER POSSIBLE PROF1 AND PROF3 TIMING COINCIDENCES.
@@ -984,6 +990,8 @@ void CombinedCoincidenceRecord::dumpDegenerate(std::map<std::string,Detector> &c
 void CombinedCoincidenceRecord::dumpUnique(std::map<std::string,Detector> &cMapDetectors, std::map<std::string,unsigned int> &cXBTFNameToIndex, TString const &cFilePathName,
                                            TFCoincidenceRecord &cTFCoincidenceRecord)
 {
+  gInterpreter->GenerateDictionary("vector<vector<UInt_t> >","vector");
+
   if(fTFPROFCoincidencesUnique.size()==0)
   {
     getTFPROFCoincidencesUnique();  
@@ -1190,10 +1198,11 @@ void CombinedCoincidenceRecord::dumpUnique(std::map<std::string,Detector> &cMapD
 void CombinedCoincidenceRecord::printDegenerate(std::map<std::string,Detector> &cMapDetectors, std::map<std::string,unsigned int> &cXBTFNameToIndex,
                                                 TFCoincidenceRecord &cTFCoincidenceRecord)
 {
+  /*
   if(fTFPROFCoincidencesUnique.size()==0)
   {
     getTFPROFCoincidencesUnique();  
-  }
+  }*/
 
   std::vector<std::vector<AcquisitionXBTF>> vec_DetAcq(cMapDetectors.size());
   for(auto det : cMapDetectors)
@@ -1239,7 +1248,6 @@ void CombinedCoincidenceRecord::printDegenerate(std::map<std::string,Detector> &
       AcquisitionXBPF::EventRecordHR ER_PROF2 = vec_DetAcqPROF2[currentPROFCO.fAcqPROF2].getDataHR()[currentPROFCO.fEventPROF2];
       AcquisitionXBPF::EventRecordHR ER_PROF3 = vec_DetAcqPROF3[currentPROFCO.fAcqPROF3].getDataHR()[currentPROFCO.fEventPROF3];
 
-      std::cout << "-------------------------------------------------------------------------" << std::endl;
       std::cout << "PROF1:   ACQ " << currentPROFCO.fAcqPROF1 << ", EVENT " << currentPROFCO.fEventPROF1 << ", MULTIPLICITY " << currentPROFCO.fMultiplicity[0] <<  " TIME: " << ER_PROF1.fTriggerTimestamp
         << "\n    FIBRES ";
       for(unsigned int k = 0; k < ER_PROF1.fFibresList.size(); k++)

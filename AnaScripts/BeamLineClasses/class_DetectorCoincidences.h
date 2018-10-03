@@ -138,7 +138,7 @@ class CombinedCoincidenceRecord{
         std::vector<PROFCoincidenceRecord::PROFCoincidence> fPROFCos;
         std::vector<std::vector<double>> fMass;
 
-        TFPROFCoincidence(TFCoincidenceRecord::TFCoincidence cTFCo, std::vector<PROFCoincidenceRecord::PROFCoincidence> cPROFCos){fTFCo = cTFCo; fPROFCos = cPROFCos; return;};
+        TFPROFCoincidence(TFCoincidenceRecord::TFCoincidence cTFCo, std::vector<PROFCoincidenceRecord::PROFCoincidence> cPROFCos){fTFCo = cTFCo; fPROFCos = cPROFCos; addMasses(); return;};
         unsigned int getMultiplicity()
         {
           return fPROFCos.size();
@@ -157,9 +157,21 @@ class CombinedCoincidenceRecord{
           std::vector<double> tempMass;
           for(unsigned int i = 0; i < cPROFCoincidence.getNFibreCombinations(); i++)
           {
-            tempMass.push_back(calculateMass(cPROFCoincidence.getMomentum()[i], 32.000, fTFCo.fTF));  
+            tempMass.push_back(calculateMass(cPROFCoincidence.getMomentum()[i], 29.00, fTFCo.fTF));  
           }
           fMass.push_back(tempMass);
+        }
+        void addMasses()
+        {
+          for(unsigned int i = 0; i < fPROFCos.size(); i++)
+          {
+            std::vector<double> tempMass;
+            for(unsigned int j = 0; j < fPROFCos[i].getNFibreCombinations(); j++)
+            {
+              tempMass.push_back(calculateMass(fPROFCos[i].getMomentum()[j], 29.00, fTFCo.fTF));  
+            }
+            fMass.push_back(tempMass);
+          }
         }
 
       private:

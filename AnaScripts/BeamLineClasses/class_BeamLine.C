@@ -102,6 +102,16 @@ std::vector<PROFCoincidenceRecord::PROFCoincidence> BeamLine::getPROFCoincidence
   return fPROFCoincdenceRecord.getPROFCoincidencesUnique();
 }
 
+std::vector<CombinedCoincidenceRecord::TFPROFCoincidence> BeamLine::getTFPROFCoincidencesDegenerate()
+{
+  return fCombinedCoincidenceRecord.getTFPROFCoincidencesDegenerate();
+}
+
+std::vector<CombinedCoincidenceRecord::TFPROFCoincidence> BeamLine::getTFPROFCoincidencesUnique()
+{
+  return fCombinedCoincidenceRecord.getTFPROFCoincidencesUnique();
+}
+
 void BeamLine::findTFCoincidences(std::map<std::string,Detector> &cMapDetectors)
 {
   std::vector<Detector> vec_TFDet;
@@ -532,13 +542,12 @@ void BeamLine::dumpTFPROFCoincidencesDegenerate (std::map<std::string,Detector> 
 
 void BeamLine::dumpTFPROFCoincidencesUnique(std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName)
 {
-  fCombinedCoincidenceRecord.dumpDegenerate(cMapDetectors, fXBTFDetNameToIndex, cFilePathName, fTFCoincidenceRecord);
+  fCombinedCoincidenceRecord.dumpUnique(cMapDetectors, fXBTFDetNameToIndex, cFilePathName, fTFCoincidenceRecord);
   return;
 }
 
 void BeamLine::findTFPROFCoincidences(std::map<std::string,Detector> &cMapDetectors, bool const &cUseUniqueCoincidencesOnly)
 {
-  std::cout << "in the function" << std::endl;
   std::vector<TFCoincidenceRecord::TFCoincidence>     vec_TFCo;  
   std::vector<PROFCoincidenceRecord::PROFCoincidence> vec_PROFCo;
 
@@ -557,7 +566,6 @@ void BeamLine::findTFPROFCoincidences(std::map<std::string,Detector> &cMapDetect
   cMapDetectors["XBPF022697"].getAcquisitions(vec_DetAcqPROF1);
   std::vector<AcquisitionXBPF> vec_DetAcqPROF3;
   cMapDetectors["XBPF022702"].getAcquisitions(vec_DetAcqPROF3);
-  std::cout << "acquisitions got" << std::endl;
 
   for(unsigned int i = 0; i < vec_TFCo.size(); i++)
   {
@@ -572,15 +580,13 @@ void BeamLine::findTFPROFCoincidences(std::map<std::string,Detector> &cMapDetect
       cMapDetectors[fXBTFIndexToDetName[vec_TFCo[i].fDetDS]].getAcquisitions(vec_AcqDS);
 
       std::vector<PROFCoincidenceRecord::PROFCoincidence> vec_MatchedPROFCo;
-      for(unsigned int j = 0; vec_PROFCo.size(); j++)
+      for(unsigned int j = 0; j < vec_PROFCo.size(); j++)
       {
-        std::cout <<"before teh if statement" << std::endl;
-        std::cout << i << " " << j << " " << vec_TFCo.size() << "  " << vec_PROFCo.size() << std::endl;
-        std::cout <<vec_DetAcqPROF1[vec_PROFCo[j].fAcqPROF1].getDataHR()[vec_PROFCo[j].fEventPROF1].fTriggerTimestamp-vec_AcqUS[vec_TFCo[i].fAcqUS].getDataHR()[vec_TFCo[i].fEventUS].fSeconds_FullTime*1e9 << std::endl;
-        if((double)vec_DetAcqPROF1[vec_PROFCo[j].fAcqPROF1].getDataHR()[vec_PROFCo[j].fEventPROF1].fTriggerTimestamp>=vec_AcqUS[vec_TFCo[i].fAcqUS].getDataHR()[vec_TFCo[i].fEventUS].fSeconds_FullTime*1e9 &&
-           (double)vec_DetAcqPROF1[vec_PROFCo[j].fAcqPROF3].getDataHR()[vec_PROFCo[j].fEventPROF3].fTriggerTimestamp<=vec_AcqDS[vec_TFCo[i].fAcqDS].getDataHR()[vec_TFCo[i].fEventDS].fSeconds_FullTime*1e9)
+        if(std::abs((double)vec_DetAcqPROF1[vec_PROFCo[j].fAcqPROF1].getDataHR()[vec_PROFCo[j].fEventPROF1].fTriggerTimestamp
+                           -vec_AcqUS[vec_TFCo[i].fAcqUS].getDataHR()[vec_TFCo[i].fEventUS].fSeconds_FullTime*1e9 - TFPROFTimingOffset) < toleranceTFPROF &&
+           std::abs((double)vec_DetAcqPROF1[vec_PROFCo[j].fAcqPROF3].getDataHR()[vec_PROFCo[j].fEventPROF3].fTriggerTimestamp
+                           -vec_AcqDS[vec_TFCo[i].fAcqDS].getDataHR()[vec_TFCo[i].fEventDS].fSeconds_FullTime*1e9 - TFPROFTimingOffset) < toleranceTFPROF)
         {
-          std::cout <<"in teh if statement" << std::endl;
           vec_MatchedPROFCo.push_back(vec_PROFCo[j]);
           std::array<unsigned int,6> coincidenceIndices = {vec_PROFCo[j].fAcqPROF1, vec_PROFCo[j].fEventPROF1,
                                                            vec_PROFCo[j].fAcqPROF2, vec_PROFCo[j].fEventPROF2,
@@ -592,7 +598,7 @@ void BeamLine::findTFPROFCoincidences(std::map<std::string,Detector> &cMapDetect
       fCombinedCoincidenceRecord.addTFPROFCoincidence(tfprofCo);
     }
   }
-  
+
   return;
 }
 

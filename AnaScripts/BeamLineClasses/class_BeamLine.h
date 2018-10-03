@@ -19,6 +19,8 @@ class BeamLine{
     std::vector<TFCoincidenceRecord::TFCoincidence> getTFCoincidencesUnique(); 
     std::vector<PROFCoincidenceRecord::PROFCoincidence> getPROFCoincidencesDegenerate(); 
     std::vector<PROFCoincidenceRecord::PROFCoincidence> getPROFCoincidencesUnique(); 
+    std::vector<CombinedCoincidenceRecord::TFPROFCoincidence> getTFPROFCoincidencesDegenerate(); 
+    std::vector<CombinedCoincidenceRecord::TFPROFCoincidence> getTFPROFCoincidencesUnique(); 
     void dumpBIData                       (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
     void dumpTFCoincidencesDegenerate     (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
     void dumpTFCoincidencesUnique         (std::map<std::string,Detector> &cMapDetectors, TString const &cFilePathName);
@@ -50,8 +52,11 @@ class BeamLine{
                            std::vector<double> &cCosTheta, std::vector<double> &cTheta, std::vector<double> &cMomentum);
 
     //NANOSECONDS.
-    double    toleranceTF   = 500.;
-    long long tolerancePROF = 100.;
+    double    toleranceTF     = 500.;
+    double    toleranceTFPROF = 500.;
+    long long tolerancePROF   = 100.;
+
+    double    TFPROFTimingOffset = 1000.;
     
     //GEOMETRY.
     //RADIANS, METERS FOR OFFSETS, MM FOR FIBRE COORDS (CORRECTED IN THE GET FUNCTION).

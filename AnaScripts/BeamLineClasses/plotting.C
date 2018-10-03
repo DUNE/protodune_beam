@@ -349,3 +349,41 @@ void plotTF(std::vector<TFCoincidenceRecord::TFCoincidence> &vec_TFCO, std::vect
   return;
 }
 
+void plotTFPROF(std::vector<CombinedCoincidenceRecord::TFPROFCoincidence> &vec_TFPROFCO, std::vector<TH1D*> &vec_TFPROFHist1D, std::vector<TH2D*> &vec_TFPROFHist2D, TString const &sType) 
+{
+  TH1D *h_Multi = new TH1D("h_Multi_"+sType, "h_Multi_"+sType,   7, -0.5,  6.5); 
+  TH1D *h_Mass  = new TH1D("h_Mass_"+sType,  "h_Mass_" +sType, 100,    0, 1000);
+  TH2D *h_TFMom = new TH2D("h_TFMom_"+sType, "h_TFMom_"+sType, 100,    0, 12, 134, 140, 140+134*0.3);
+
+  if(sType=="UNIQ")
+  {
+    SetHistTitles(h_Mass,  "Mass, Unique Events",                        "Mass, (GeV)",     "Time, (ns)");
+    SetHistTitles(h_TFMom, "Time of Flight vs. Momentum, Unique Events", "Momentum, (GeV)", "Time, (ns)");
+  }
+  else
+  {
+    SetHistTitles(h_Mass,  "Mass, Degenerate Events",                        "Mass, (GeV)",     "Time, (ns)");
+    SetHistTitles(h_TFMom, "Time of Flight vs. Momentum, Degenerate Events", "Momentum, (GeV)", "Time, (ns)");
+  }
+
+  for(unsigned int i = 0; i < vec_TFPROFCO.size(); i++)
+  {
+    TFCoincidenceRecord::TFCoincidence currentTFCO = vec_TFPROFCO[i].fTFCo;
+    std::vector<PROFCoincidenceRecord::PROFCoincidence> currentPROFCOs = vec_TFPROFCO[i].fPROFCos;
+    std::vector<std::vector<double>> currentMasses = vec_TFPROFCO[i].fMass;
+    h_Multi->Fill((vec_TFPROFCO[i].getMultiplicity()<=5 ?  vec_TFPROFCO[i].getMultiplicity() : 6));
+    for(unsigned int j = 0; j < currentMasses.size(); j++)
+    {
+      for(unsigned int k = 0; k < currentMasses[j].size(); k++)
+      {
+        h_Mass ->Fill(currentMasses[j][k]);
+        h_TFMom->Fill(currentPROFCOs[j].getMomentum()[k], currentTFCO.fTF);
+      }
+    }
+  }
+
+  vec_TFPROFHist1D.push_back(h_Mass);
+  vec_TFPROFHist2D.push_back(h_TFMom);
+
+  return;
+}
