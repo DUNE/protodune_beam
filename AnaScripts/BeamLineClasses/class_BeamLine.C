@@ -168,16 +168,16 @@ void BeamLine::findTFCoincidences(std::map<std::string,Detector> &cMapDetectors)
                 {
                   unsigned int newStartValue = 0;
                   //LOOP OVER THE EVENTS IN US ACQUISITION K.
-                  //for(unsigned int m = 0; m < (vec_CurrentRecordsUS.size() < 100 ? vec_CurrentRecordsUS.size() : 100); m++)
-                  for(unsigned int m = 0; m < vec_CurrentRecordsUS.size(); m++)
+                  for(unsigned int m = 0; m < (vec_CurrentRecordsUS.size() < eventLimit ? vec_CurrentRecordsUS.size() : eventLimit); m++)
+                  //for(unsigned int m = 0; m < vec_CurrentRecordsUS.size(); m++)
                   {
                     bool beenInRegion = false;
                     if(!((((double)vec_CurrentRecordsUS[m].fSeconds   -(double)vec_CurrentRecordsDS[vec_CurrentRecordsDS.size()-1].fSeconds)
                                  +(vec_CurrentRecordsUS[m].fSubSeconds-vec_CurrentRecordsDS[vec_CurrentRecordsDS.size()-1].fSubSeconds)/1.e9)*1.e9>0))
                     {
                       //LOOP OVER THE EVENTS IN DS ACQUISITION L.
-                      //for(unsigned int n = newStartValue; n < (vec_CurrentRecordsDS.size() < 100 ? vec_CurrentRecordsDS.size() : 100); n++)
-                      for(unsigned int n = newStartValue; n < vec_CurrentRecordsDS.size(); n++)
+                      for(unsigned int n = newStartValue; n < (vec_CurrentRecordsDS.size() < eventLimit ? vec_CurrentRecordsDS.size() : eventLimit); n++)
+                      //for(unsigned int n = newStartValue; n < vec_CurrentRecordsDS.size(); n++)
                       {
                         double deltaT = (((double)vec_CurrentRecordsUS[m].fSeconds   -(double)vec_CurrentRecordsDS[n].fSeconds)
                                                 +(vec_CurrentRecordsUS[m].fSubSeconds-vec_CurrentRecordsDS[n].fSubSeconds)/1.e9)*1.e9;
@@ -258,7 +258,7 @@ void BeamLine::findPROFCoincidences(std::map<std::string,Detector> &cMapDetector
           if(!(vec_CurrentRecordsPROF1[vec_DetAcqPROF1[i].getNNonZeroEvents()-1].fTriggerTimestamp-vec_CurrentRecordsPROF3[0].fTriggerTimestamp<-1*tolerancePROF))
           {
             unsigned int newStartValue = 0;
-            for(unsigned int k = 0; k < (vec_DetAcqPROF1[i].getNNonZeroEvents()<500 ? vec_DetAcqPROF1[i].getNNonZeroEvents() : 500); k++)
+            for(unsigned int k = 0; k < (vec_DetAcqPROF1[i].getNNonZeroEvents()<eventLimit ? vec_DetAcqPROF1[i].getNNonZeroEvents() : eventLimit); k++)
             //for(unsigned int k = 0; k < vec_DetAcqPROF1[i].getNNonZeroEvents(); k++)
             {
               bool beenInRegion = false;
@@ -266,7 +266,7 @@ void BeamLine::findPROFCoincidences(std::map<std::string,Detector> &cMapDetector
               if(!(vec_CurrentRecordsPROF1[k].fTriggerTimestamp-vec_CurrentRecordsPROF3[vec_DetAcqPROF3[j].getNNonZeroEvents()-1].fTriggerTimestamp>0)) 
               {
                 //LOOP L OVER THE EVENTS IN ACQUISITION J FROM PROF3.
-                for(unsigned int l = newStartValue; l < (vec_DetAcqPROF1[j].getNNonZeroEvents()<500 ? vec_DetAcqPROF1[j].getNNonZeroEvents() : 500); l++)
+                for(unsigned int l = newStartValue; l < (vec_DetAcqPROF1[j].getNNonZeroEvents()<eventLimit ? vec_DetAcqPROF1[j].getNNonZeroEvents() : eventLimit); l++)
                 //for(unsigned int l = newStartValue; l < vec_DetAcqPROF3[j].getNNonZeroEvents(); l++)
                 {
                   long long deltaT = vec_CurrentRecordsPROF1[k].fTriggerTimestamp-vec_CurrentRecordsPROF3[l].fTriggerTimestamp;
@@ -567,7 +567,9 @@ void BeamLine::findTFPROFCoincidences(std::map<std::string,Detector> &cMapDetect
   std::vector<AcquisitionXBPF> vec_DetAcqPROF3;
   cMapDetectors["XBPF022702"].getAcquisitions(vec_DetAcqPROF3);
 
-  for(unsigned int i = 0; i < vec_TFCo.size(); i++)
+  unsigned int newStartValue = 0;
+  //for(unsigned int i = 0; i < vec_TFCo.size(); i++)
+  for(unsigned int i = 0; i < (vec_TFCo.size()<eventLimit ? vec_TFCo.size() : eventLimit); i++)
   {
     if((fXBTFIndexToDetName[vec_TFCo[i].fDetUS]=="XBTF022687A" && fXBTFIndexToDetName[vec_TFCo[i].fDetDS]=="XBTF022716A") ||
        (fXBTFIndexToDetName[vec_TFCo[i].fDetUS]=="XBTF022687A" && fXBTFIndexToDetName[vec_TFCo[i].fDetDS]=="XBTF022716B") ||
@@ -579,19 +581,51 @@ void BeamLine::findTFPROFCoincidences(std::map<std::string,Detector> &cMapDetect
       std::vector<AcquisitionXBTF> vec_AcqDS;
       cMapDetectors[fXBTFIndexToDetName[vec_TFCo[i].fDetDS]].getAcquisitions(vec_AcqDS);
 
+      bool beenInRegion = false; 
       std::vector<PROFCoincidenceRecord::PROFCoincidence> vec_MatchedPROFCo;
-      for(unsigned int j = 0; j < vec_PROFCo.size(); j++)
+      //for(unsigned int j = newStartValue; j < vec_PROFCo.size(); j++)
+      for(unsigned int j = newStartValue; j < (vec_PROFCo.size() < eventLimit ? vec_PROFCo.size() : eventLimit); j++)
+      //for(unsigned int j = 0; j < vec_PROFCo.size(); j++)
       {
         if(std::abs((double)vec_DetAcqPROF1[vec_PROFCo[j].fAcqPROF1].getDataHR()[vec_PROFCo[j].fEventPROF1].fTriggerTimestamp
                            -vec_AcqUS[vec_TFCo[i].fAcqUS].getDataHR()[vec_TFCo[i].fEventUS].fSeconds_FullTime*1e9 - TFPROFTimingOffset) < toleranceTFPROF &&
            std::abs((double)vec_DetAcqPROF1[vec_PROFCo[j].fAcqPROF3].getDataHR()[vec_PROFCo[j].fEventPROF3].fTriggerTimestamp
                            -vec_AcqDS[vec_TFCo[i].fAcqDS].getDataHR()[vec_TFCo[i].fEventDS].fSeconds_FullTime*1e9 - TFPROFTimingOffset) < toleranceTFPROF)
         {
+          if(beenInRegion==false)
+          {
+            beenInRegion = true;
+            if(j>0)
+            {
+              newStartValue = j - 1; 
+              if(j==vec_PROFCo.size()-1)
+              {
+                newStartValue = 0;
+              }
+            }
+            else
+            {
+              newStartValue = 0;
+            }
+          }
+          if(j==vec_PROFCo.size()-1)
+          {
+            newStartValue = 0;
+          }
           vec_MatchedPROFCo.push_back(vec_PROFCo[j]);
           std::array<unsigned int,6> coincidenceIndices = {vec_PROFCo[j].fAcqPROF1, vec_PROFCo[j].fEventPROF1,
                                                            vec_PROFCo[j].fAcqPROF2, vec_PROFCo[j].fEventPROF2,
                                                            vec_PROFCo[j].fAcqPROF3, vec_PROFCo[j].fEventPROF3};
           fCombinedCoincidenceRecord.addMultiplicityInfo(coincidenceIndices);
+        }
+        else if(beenInRegion==true)
+        {
+          break;
+        }
+        if(j==vec_PROFCo.size()-1)
+        {
+          newStartValue = 0;
+          break;
         }
       }
       CombinedCoincidenceRecord::TFPROFCoincidence tfprofCo(vec_TFCo[i], vec_MatchedPROFCo);

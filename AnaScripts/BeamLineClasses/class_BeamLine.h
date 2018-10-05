@@ -51,6 +51,7 @@ class BeamLine{
     void   considerMomenta(std::vector<unsigned int> const &cPROF1Fibs, std::vector<unsigned int> const &cPROF2Fibs, std::vector<unsigned int> const &cPROF3Fibs, double const &cCurrent,
                            std::vector<double> &cCosTheta, std::vector<double> &cTheta, std::vector<double> &cMomentum);
 
+    unsigned int eventLimit = 500;
     //NANOSECONDS.
     double    toleranceTF     = 500.;
     double    toleranceTFPROF = 500.;
