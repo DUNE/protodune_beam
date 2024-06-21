@@ -8,16 +8,20 @@
 #include <TH2.h>
 #include <TString.h>
 #include <TROOT.h>
+#include <vector>
 
 
 int main(int argc, char *argv[])
 {
-  gROOT->ProcessLine("#include <vector>");
-  std::string s_OutDir = "/scratch/BeamInstOutput/HistogramsAndTrees_DIPProcessed/";
+
+  std::cout << "here" << std::endl;
+  //gROOT->ProcessLine("#include <vector>");
+  std::string s_OutDir = "/afs/cern.ch/user/j/jcalcutt/scratch/BeamInstOutput/HistogramsAndTrees_DIPProcessed/";
 
   bool zeroSuppress = argv[1];
   std::vector<std::string> vec_DataPath;
   std::vector<std::string> vec_Detectors;
+  std::cout << "here" << std::endl;
 
   for(unsigned int i = 2; i < argc; i++)
   {

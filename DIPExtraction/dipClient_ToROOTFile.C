@@ -40,6 +40,8 @@ class Writer
     int                br_DQ;
     int                br_CurrentDQ;
     double             br_Current;
+    double             br_xcet_pressure;
+    int                br_xcet_counts, br_xcet_countsPm, br_xcet_countsTrig;
     double             br_Timestamp;
     unsigned int       br_CountsRec;
     unsigned int       br_TimestampCount;
@@ -66,6 +68,7 @@ class Writer
     void closeCurrentFile();
     void writeAcqXBPF(const char *cSubscription, const DipData &cDipData, const char *var, unsigned long long const &cAcqTimestamp, unsigned int const &cCountsRec);
     void writeAcqXBTF(const char *cSubscription, const DipData &cDipData, std::map<std::string,const char*> &map_VarsList, unsigned long long const &cTimestamp);
+    void writeAcqXCET(const char *cSubscription, const DipData &cDipData, unsigned long long const &cTimestamp);
 };
 
 Writer::Writer(std::string cOutputPath, unsigned int cFileCloseInterval)
@@ -106,6 +109,11 @@ void Writer::clearTreeVars()
   br_TTS_LSB.clear(); br_TTS_MSB.clear(); br_ETS_LSB.clear(); br_ETS_MSB.clear(); br_Fibres0.clear();
   br_Fibres1.clear(); br_Fibres2.clear(); br_Fibres3.clear(); br_Fibres4.clear(); br_Fibres5.clear();
   br_Coarse.clear();  br_Frac.clear();    br_Seconds.clear();
+
+  br_xcet_counts = 0;
+  br_xcet_countsPm = 0;
+  br_xcet_countsTrig = 0;
+  br_xcet_pressure = 0.;
 
   return;
 }
@@ -154,13 +162,28 @@ void Writer::dataReceived(const char *cSubscription, DipData &cDipData)
   std::cout.precision(13);
   std::cout << "dataReceived(), TIMESTAMP: " << acqTimestamp_Seconds << ", SUBSCRIPTION: " << cSubscription << ". DATA QUALITY FLAG: " << cDipData.extractDataQuality() << std::endl;
 
+  int nVars = 0;
+  const char **varsList = cDipData.getTags(nVars);
+  std::cout << "Got tags " << cDipData.size() << std::endl;
+  for (size_t i = 0; i < cDipData.size(); ++i) {
+    std::cout << i << " " << varsList[i] <<  " " << cDipData.getValueType(varsList[i]) << std::endl;
+  }
+
+
+  std::cout << cSubscription[24] << std::endl;
   if(cSubscription[24]=='B')
   {
+    std::cout << "Found magnet" << std::endl;
     int nVars = 0;
-    int var_CURRENT = 1;
+    int var_CURRENT = 3; //Old index is 1 new is 3?? 
     const char **varsList = cDipData.getTags(nVars);
+    /*std::cout << "Got tags " << cDipData.size() << std::endl;
+    for (size_t i = 0; i < cDipData.size(); ++i) {
+      std::cout << i << " " << varsList[i] << " " << cDipData.getValueType(varsList[i]) << std::endl;
+    }*/
 
     fLatestCurrent   = getCurrent(cDipData, varsList[var_CURRENT]); 
+    std::cout << "fLatestCurrent: " << fLatestCurrent << std::endl;
     fLatestCurrentDQ = cDipData.extractDataQuality();
   }
 
@@ -171,8 +194,8 @@ void Writer::dataReceived(const char *cSubscription, DipData &cDipData)
       reopenFile(acqTimestamp_Seconds);
 
       int nVars             = 0;
-      int var_COUNTSRECORDS = 5;
-      int var_EVENTSDATA    = 11;
+      int var_COUNTSRECORDS = 6; //5;
+      int var_EVENTSDATA    = 12; //11;
       const char **varsList = cDipData.getTags(nVars);
 
       unsigned int acqCountsRec = getCountsRec(cSubscription, cDipData, varsList[var_COUNTSRECORDS]);
@@ -188,10 +211,34 @@ void Writer::dataReceived(const char *cSubscription, DipData &cDipData)
       std::map<std::string,const char*> map_VarsList;
       map_VarsList["COARSE"]         = varsList[1];
       map_VarsList["FRAC"]           = varsList[4];
-      map_VarsList["SECONDS"]        = varsList[5];
-      map_VarsList["TIMESTAMPCOUNT"] = varsList[6];
+      map_VarsList["SECONDS"]        = varsList[6]; //5];
+      map_VarsList["TIMESTAMPCOUNT"] = varsList[7]; //];
 
       writeAcqXBTF(cSubscription, cDipData, map_VarsList, acqTimestamp);
+    }
+    //dip/acc/NORTH/NP04/BI/XCET/XCET022713
+    else if (cSubscription[24] == 'E') {
+      reopenFile(acqTimestamp_Seconds);
+      std::cout << "Got XCET: " << cSubscription << std::endl;
+      std::cout << "counts: " << varsList[1] << std::endl;
+      std::cout << "countsTrig: " << varsList[3] << std::endl;
+      writeAcqXCET(cSubscription, cDipData, acqTimestamp);
+      //Got tags 14
+      //0 acqStamp 5
+      //1 counts 4
+      //2 countsPm 4
+      //3 countsTrig 4
+      //4 cycleName 8
+      //5 cycleStamp 5
+      //6 delayPm 7
+      //7 equipmentName 8
+      //8 event 4
+      //9 highVoltagePm 7
+      //10 pressure 7
+      //11 pressure_status 4
+      //12 pressure_tol 7
+      //13 totalIntensity 60
+
     }
   }
 
@@ -200,6 +247,7 @@ void Writer::dataReceived(const char *cSubscription, DipData &cDipData)
 
 void Writer::reopenFile(double const &acqTimestamp_Seconds)
 {
+  std::cout << "In reopenFile " << fCurrentOpenTime << " " << fFileCloseInterval << " " << acqTimestamp_Seconds << std::endl;
   if(acqTimestamp_Seconds >= fCurrentOpenTime + fFileCloseInterval)
   {
     closeCurrentFile();
@@ -215,6 +263,12 @@ void Writer::reopenFile(double const &acqTimestamp_Seconds)
     fCurrentTree->Branch("countsRec",      &br_CountsRec,      "countsRec/I");
     fCurrentTree->Branch("timestampCount", &br_TimestampCount, "timestampCount/I");
     fCurrentTree->Branch("current",        &br_Current,        "current/D");
+
+    fCurrentTree->Branch("pressure",        &br_xcet_pressure,        "pressure/D");
+    fCurrentTree->Branch("counts",        &br_xcet_counts,        "counts/I");
+    fCurrentTree->Branch("countsPm",        &br_xcet_countsPm,        "countsPm/I");
+    fCurrentTree->Branch("countsTrig",        &br_xcet_countsTrig,        "countsTrig/I");
+
     fCurrentTree->Branch("TTS_LSB", &br_TTS_LSB);
     fCurrentTree->Branch("TTS_MSB", &br_TTS_MSB);
     fCurrentTree->Branch("ETS_LSB", &br_ETS_LSB);
@@ -243,7 +297,8 @@ void Writer::reopenFile(double const &acqTimestamp_Seconds)
 void Writer::writeAcqXBPF(const char *cSubscription, const DipData &cDipData, const char *var, unsigned long long const &cTimestamp, unsigned int const &cCountsRec)
 {
   int   arrayLength = 0;
-  const DipLong *acqArray    = cDipData.extractLongArray(arrayLength, var);
+  //const DipLong *acqArray    = cDipData.extractLongArray(arrayLength, var);
+  const DipInt *acqArray    = cDipData.extractIntArray(arrayLength, var);
   std::string s_Subscription = cSubscription;
   std::string s_DetName      = s_Subscription.substr(27,36);
 
@@ -301,6 +356,56 @@ void Writer::writeAcqXBTF(const char *cSubscription, const DipData &cDipData, st
     br_Seconds.push_back(acqArray_SECONDS[i]);
     i++;
   }
+  fCurrentTree->Fill();
+  clearTreeVars();
+
+  return;
+}
+
+
+void Writer::writeAcqXCET(const char *cSubscription, const DipData &cDipData, /*std::map<std::string,const char*> &map_VarsList*/ unsigned long long const &cTimestamp)
+{
+  //int   arrayLength = 0;
+  br_xcet_counts  = cDipData.extractInt("counts");
+  br_xcet_countsPm    = cDipData.extractInt("countsPm");
+  br_xcet_countsTrig = cDipData.extractInt("countsTrig");
+  br_xcet_pressure = cDipData.extractDouble("pressure");
+
+  std::string s_Subscription = cSubscription;
+  std::string s_DetName = s_Subscription.substr(27);
+
+  br_Subscription   = s_Subscription; 
+  br_DetName        = s_DetName; 
+  br_DetType        = "XCET";
+  br_Timestamp      = cTimestamp;
+  br_TimestampCount = 0; //cDipData.extractInt(map_VarsList["TIMESTAMPCOUNT"]); 
+  br_DQ             = cDipData.extractDataQuality();
+
+      //Got tags 14
+      //0 acqStamp 5
+      //1 counts 4
+      //2 countsPm 4
+      //3 countsTrig 4
+      //4 cycleName 8
+      //5 cycleStamp 5
+      //6 delayPm 7
+      //7 equipmentName 8
+      //8 event 4
+      //9 highVoltagePm 7
+      //10 pressure 7
+      //11 pressure_status 4
+      //12 pressure_tol 7
+      //13 totalIntensity 60
+
+  /*int i = 0;
+  std::cout << "arrayLength: " << arrayLength << std::endl;
+  while(i < arrayLength)
+  {
+    br_Coarse .push_back(acqArray_COARSE[i] );  
+    br_Frac   .push_back(acqArray_FRAC[i]   );
+    br_Seconds.push_back(acqArray_SECONDS[i]);
+    i++;
+  }*/
   fCurrentTree->Fill();
   clearTreeVars();
 

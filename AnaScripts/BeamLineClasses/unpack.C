@@ -12,6 +12,8 @@ void unpackDIPROOT(std::map<std::string,Detector> &cMapDetector, std::string con
   double       br_Current;
   int          br_CountsRec;
   int          br_TimestampCount;
+  int br_xcet_counts, br_xcet_countsPm, br_xcet_countsTrig;
+  double br_xcet_pressure;
   std::vector<unsigned long> *br_TTS_LSB = 0;
   std::vector<unsigned long> *br_TTS_MSB = 0;
   std::vector<unsigned long> *br_ETS_LSB = 0;
@@ -46,6 +48,11 @@ void unpackDIPROOT(std::map<std::string,Detector> &cMapDetector, std::string con
   t->SetBranchAddress("Coarse",  &br_Coarse );
   t->SetBranchAddress("Frac",    &br_Frac   );
   t->SetBranchAddress("Seconds", &br_Seconds);
+
+  t->SetBranchAddress("counts", &br_xcet_counts);
+  t->SetBranchAddress("countsPm", &br_xcet_countsPm);
+  t->SetBranchAddress("countsTrig", &br_xcet_countsTrig);
+  t->SetBranchAddress("pressure", &br_xcet_pressure);
 
   for(unsigned int i = 0; i < t->GetEntries(); i++)
   {
@@ -85,6 +92,8 @@ void unpackDIPROOT(std::map<std::string,Detector> &cMapDetector, std::string con
       }
       cMapDetector[*br_DetName].addAcquisition(acq);
     }
+
+    ///else if (XCET) Here
   }
 
   return;
