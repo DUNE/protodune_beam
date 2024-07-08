@@ -23,7 +23,9 @@ int main(int argc, char *argv[])
   std::vector<std::string> vec_Detectors;
   std::cout << "here" << std::endl;
 
-  for(unsigned int i = 2; i < argc; i++)
+  s_OutDir = argv[2];
+
+  for(unsigned int i = 3; i < argc; i++)
   {
     std::string s_Arg = argv[i];
     if(s_Arg.find("/") != std::string::npos)

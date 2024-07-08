@@ -242,7 +242,7 @@ void plot_EventLevel(std::map<std::string,Detector> &map_Detector, std::map<std:
 void plotPROF(std::vector<PROFCoincidenceRecord::PROFCoincidence> &vec_PROFCO, std::vector<TH1D*> &vec_PROFHist1D, std::vector<TH2D*> &vec_PROFHist2D, TString const &sType) 
 {
   TH1D *h_CosTheta   = new TH1D("h_CosTheta_"  +sType, "h_CosTheta_"  +sType, 100, -1.1,  1.1);
-  TH1D *h_Momentum   = new TH1D("h_Momentum_"  +sType, "h_Momentum_"  +sType, 1000,    0,   12);
+  TH1D *h_Momentum   = new TH1D("h_Momentum_"  +sType, "h_Momentum_"  +sType, 2000,    -12,   12);
   TH1D *h_Theta      = new TH1D("h_Theta_"     +sType, "h_Theta_"     +sType, 100,    0,   12);
   TH1D *h_FibComb    = new TH1D("h_FibComb_"   +sType, "h_FibComb_"   +sType,  21, -0.5, 20.5);
   TH1D *h_MultiPROF1 = new TH1D("h_MultiPROF1_"+sType, "h_MultiPROF1_"+sType,   7, -0.5,  6.5);

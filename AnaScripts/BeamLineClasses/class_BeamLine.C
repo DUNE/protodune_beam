@@ -53,13 +53,13 @@ double BeamLine::getCosTheta(unsigned int const &cPROF1, unsigned const &cPROF2,
 double BeamLine::getMomentum(double const &cCosTheta, double const &cCurrent)
 {
   double LB     = mag_P1*cCurrent;
-  double deltaI = cCurrent - mag_P4; 
+  double deltaI = std::fabs(cCurrent) - mag_P4; 
   if(deltaI>0)
   {
     LB+= mag_P3*deltaI*deltaI;
   }
 
-  return (299792458*LB/(1.e9*(std::acos(cCosTheta)))); 
+  return std::fabs((299792458*LB/(1.e9*(std::acos(cCosTheta))))); 
 }
 
 void BeamLine::considerMomenta(std::vector<unsigned int> const &cPROF1Fibs, std::vector<unsigned int> const &cPROF2Fibs, std::vector<unsigned int> const &cPROF3Fibs, double const &cCurrent,

@@ -49,14 +49,16 @@ void unpackDIPROOT(std::map<std::string,Detector> &cMapDetector, std::string con
   t->SetBranchAddress("Frac",    &br_Frac   );
   t->SetBranchAddress("Seconds", &br_Seconds);
 
-  t->SetBranchAddress("counts", &br_xcet_counts);
-  t->SetBranchAddress("countsPm", &br_xcet_countsPm);
-  t->SetBranchAddress("countsTrig", &br_xcet_countsTrig);
-  t->SetBranchAddress("pressure", &br_xcet_pressure);
+  //t->SetBranchAddress("counts", &br_xcet_counts);
+  //t->SetBranchAddress("countsPm", &br_xcet_countsPm);
+  //t->SetBranchAddress("countsTrig", &br_xcet_countsTrig);
+  //t->SetBranchAddress("pressure", &br_xcet_pressure);
 
   for(unsigned int i = 0; i < t->GetEntries(); i++)
   {
+    //std::cout << "Getting Entry" << std::endl;
     t->GetEntry(i);
+    //std::cout << "Done" << std::endl;
     if(*br_DetType=="XBPF" && cMapDetector.count(*br_DetName)>0)
     {
       AcquisitionXBPF acq;
@@ -84,8 +86,10 @@ void unpackDIPROOT(std::map<std::string,Detector> &cMapDetector, std::string con
     }
     else if(*br_DetType=="XBTF" && cMapDetector.count(*br_DetName)>0)
     {
+      std::cout << "Adding acq " << *br_DetName << std::endl;
       AcquisitionXBTF acq;
       acq.addAcqDetails(br_Timestamp, br_TimestampCount);
+      std::cout << "\tCounts: " << br_TimestampCount << std::endl;
       for(unsigned int j = 0; j < br_TimestampCount; j++)
       {
         acq.addEventRecord({br_Frac->at(j), br_Coarse->at(j), br_Seconds->at(j)});      
